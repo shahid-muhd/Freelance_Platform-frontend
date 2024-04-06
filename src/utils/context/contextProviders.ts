@@ -1,18 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import constate from "constate";
+import { PortfoliosState, UserData } from "../types";
+import { Url } from "url";
 
-type UserData = {
-  user?: {
-    id?: number;
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    phone?: string;
-  };
-
-  address?: {};
-};
 // For preventing users from accessing sections of the app in certain senarios.
 function useDisabler() {
   const [disabler, setDisabler] = useState(false);
@@ -25,10 +16,36 @@ export const [DisablerContextProvider, useDisablerContext] =
   constate(useDisabler);
 
 function useUserData() {
-  const [user, setUser] = useState<UserData | null>(null);
-  const setUserData = (data: UserData) => setUser(data);
-  const clearUserData = () => setUser(null);
-  return { user, setUserData, clearUserData };
+  const [user, setUser] = useState<UserData | null>({
+    user: { first_name: "", last_name: "", email: "", phone: "" },
+  });
+  const setUserData = (data: UserData | null) => setUser(data);
+
+  return { user, setUserData };
 }
 
 export const [UserContextProvider, useUserContext] = constate(useUserData);
+
+function useWorkProfileCreator() {
+  const [profileDescription, setprofileDescription] = useState({
+    profileTitle: "",
+    profileSummary: "",
+  });
+
+  const [skills, setSkills] = useState<string[] | null>(null);
+
+  const [portfolios, setPortfolios] = useState<PortfoliosState>([]);
+
+  return {
+    skills,
+    setSkills,
+    profileDescription,
+    setprofileDescription,
+    portfolios,
+    setPortfolios,
+  };
+}
+
+export const [WorkProfileContextProvider, useWorkProfileContext] = constate(
+  useWorkProfileCreator
+);

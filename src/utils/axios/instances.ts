@@ -42,8 +42,10 @@ primaryRequest.interceptors.response.use(
     // Check if the error response has a specific status code
     if (error.response && error.response.status === 401) {
       console.log("error from interceptor");
-
-      window.location.replace("/auth/login/");
+      if (window.location.pathname!=='/auth/login') {
+        
+        window.location.replace("/auth/login/");
+      }
       console.error("Unauthorized access");
     }
 

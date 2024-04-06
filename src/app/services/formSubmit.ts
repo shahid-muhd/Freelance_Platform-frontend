@@ -1,10 +1,12 @@
-import { useState } from 'react';
-import { Registration, login } from '@/api/authentication';
-import { useRouter } from 'next/navigation';
-
+import { useState } from "react";
+import { Registration, login } from "@/api/authenticationApi";
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
 type userCredentials = {
   email: string;
   password?: string;
+  first_name?: string;
+  last_name?: string;
 };
 
 export function useFormSubmitter() {
@@ -12,42 +14,48 @@ export function useFormSubmitter() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  async function handleFormSubmit(formType: string, { email, password }: userCredentials): Promise<void> {
+  async function handleAuthFormSubmits(
+    formType: string,
+    { email, password,first_name,last_name }: userCredentials
+  ): Promise<void> {
     setLoading(true);
     setError(null);
 
     try {
       switch (formType) {
-        case 'register':
+        case "register":
           await Registration({ email });
-          localStorage.setItem('unVerifiedEmail', JSON.stringify(email));
+          localStorage.setItem("unVerifiedEmail", JSON.stringify(email));
           break;
 
-        case 'accountCreation':
-          await Registration({ email, password });
+        case "accountCreation":
+          await Registration({ email, password,first_name,last_name });
           localStorage.clear();
           router.replace("/auth/login");
           break;
 
-        case 'login':
-          console.log(email,password);
-          
-          const response= await login({ email, password });
+        case "login":
+          console.log(email, password);
+
+          const response = await login({ email, password });
           response &&
-          localStorage.setItem(
-            "access_token",
-            JSON.stringify(response.data.access)
-          );
-          router.push('/user/dashboard/')
+            localStorage.setItem(
+              "access_token",
+              JSON.stringify(response.data.access)
+            );
+            localStorage.setItem(
+              "refresh_token",
+              JSON.stringify(response.data.refresh)
+            );
+          router.push("/user/dashboard/");
           break;
 
         default:
-          throw new Error('Invalid form type');
+          throw new Error("Invalid form type");
       }
-    } catch (err:any) {
-      setError(err.message || 'An error occurred');
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
       console.log(err);
-      
     } finally {
       setLoading(false);
     }
@@ -56,12 +64,9 @@ export function useFormSubmitter() {
   return {
     loading,
     error,
-    handleFormSubmit,
+    handleAuthFormSubmits,
   };
 }
-
-
-
 
 // import {
 //   RegistrationService,

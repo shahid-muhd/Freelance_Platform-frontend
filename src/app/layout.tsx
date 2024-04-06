@@ -7,7 +7,10 @@ import { ThemeProvider } from "@/utils/ThemeProvider";
 import {
   UserContextProvider,
   DisablerContextProvider,
+  WorkProfileContextProvider,
 } from "@/utils/context/contextProviders";
+import { Toaster } from "@/components/ui/toaster";
+import RouteProtection from "@/utils/manageRoutes/RouteProtection";
 
 const nunito = Nunito_Sans({ subsets: ["latin"] });
 
@@ -24,20 +27,27 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunito.className} `}>
-        <DisablerContextProvider>
-          <UserContextProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <NavBar />
+        <main>
+          <DisablerContextProvider>
+            <UserContextProvider>
+              <WorkProfileContextProvider>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="dark"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  <RouteProtection>
+                    <NavBar />
 
-              {children}
-            </ThemeProvider>
-          </UserContextProvider>
-        </DisablerContextProvider>
+                    {children}
+                  </RouteProtection>
+                  <Toaster />
+                </ThemeProvider>
+              </WorkProfileContextProvider>
+            </UserContextProvider>
+          </DisablerContextProvider>
+        </main>
       </body>
     </html>
   );

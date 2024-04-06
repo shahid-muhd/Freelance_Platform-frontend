@@ -5,9 +5,12 @@ import { FaNetworkWired } from "react-icons/fa6";
 import { RxDashboard } from "react-icons/rx";
 import { LuBuilding2 } from "react-icons/lu";
 import { FaStar } from "react-icons/fa";
-import UserDetailsComponent from "./components/userDetailsComponent";
-import JobOverviewComponent from "./components/JobOverviewComponent";
+import UserDetailsComponent from "../../../components/DashboardComponents/PersonalDetails/userDetailsComponent";
+import JobOverviewComponent from "../../../components/DashboardComponents/JobOverviewComponent";
 import userCrudServices from "@/app/services/userCrudServices";
+import WorkProfiles from "../../../components/DashboardComponents/WorkProfile/WorkProfiles";
+import workProfileServices from "@/app/services/workProfileServices";
+import { WorkProfile } from "@/utils/types";
 
 interface MenuItems {
   id: number;
@@ -17,30 +20,36 @@ interface MenuItems {
 
 function page() {
   const [currentMenuId, setCurrentMenuId] = useState(1);
-
+  const { getUserDetails, handleLogout } = userCrudServices();
+  const { getWorkProfiles } = workProfileServices();
+  const [workProfiles, setworkProfiles] = useState<WorkProfile[] | null>(null);
   const menuIdChanger = (menuId: number) => {
     setCurrentMenuId(menuId);
   };
 
-  const { getUserDetails } = userCrudServices();
-
   useEffect(() => {
+    // The userDetails Service stores the fetched data in the context
     getUserDetails();
-  }, []);
 
+    getWorkProfiles().then((res: any) => {
+      console.log(JSON.parse(res));
+      
+      setworkProfiles(JSON.parse(res));
+    });
+  }, []);
 
   const renderComponent = useMemo(() => {
     switch (currentMenuId) {
       case 1:
-        return <UserDetailsComponent  />;
+        return <UserDetailsComponent />;
       case 2:
         return <JobOverviewComponent />;
       case 3:
-        return null;
+        return <WorkProfiles workProfiles={workProfiles} />;
       case 4:
         return null;
       default:
-        return null; // No component rendered initially or when no menu item is selected
+        return null;
     }
   }, [currentMenuId]);
 
@@ -94,6 +103,7 @@ function page() {
                   <p className="ml-2 text-lg">Help</p>
                 </div>
                 <div
+                  onClick={handleLogout}
                   className={` sidebar-menu text-left  w-full flex gap-3 items-baseline  p-2 px-3 rounded-md mb-5 hover:cursor-pointer  `}
                 >
                   <div>

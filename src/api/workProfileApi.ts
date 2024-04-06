@@ -1,22 +1,25 @@
 import { AxiosResponse } from "axios"; // Import AxiosResponse type if needed
 import { primaryRequest } from "../utils/axios/instances";
+import { NewWorkProfile } from "@/utils/types";
 // Assuming you have defined primaryRequest elsewhere
-import { ProfileFrom, verificationParams } from "../utils/types";
-type HttpMethod = "get" | "post" | "patch" | "delete";
 
-const url = "/auth/user/";
-// Helper function to handle API requests and errors
+type HttpMethod = "get" | "post" | "patch" | "delete";
+const url = "/work_profiles/";
 const handleApiRequest = async <T>(
   method: HttpMethod,
 
-  data?: ProfileFrom | verificationParams
+  data?: NewWorkProfile
 ): Promise<T> => {
   try {
     let response: AxiosResponse<T> | null = null;
     if (method === "get") {
       response = await primaryRequest.get<T>(url);
     } else if (method === "post") {
-      response = await primaryRequest.post<T>(url, data);
+      response = await primaryRequest.post<T>(url, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     } else if (method === "patch") {
       response = await primaryRequest.patch<T>(url, data);
     } else if (method === "delete") {
@@ -33,26 +36,8 @@ const handleApiRequest = async <T>(
   }
 };
 
-export const userCrudApi = {
-  getUser: () => handleApiRequest("get"),
+export const workProfileApi = {
+  getWorkProfiles: () => handleApiRequest("get"),
 
-  updateUser: (updatedUserData: ProfileFrom) =>
-    handleApiRequest<ProfileFrom>("patch", updatedUserData),
-
-  deleteUser: () => handleApiRequest<void>("delete"),
-
-  verifyUserData: (data: verificationParams) =>
-    handleApiRequest<verificationParams>("post", data),
+  createWorkProfile: (data: any) => handleApiRequest<NewWorkProfile>("post", data),
 };
-
-interface UserData {
-  user?: {
-    id?: number;
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    phone?: string;
-  };
-
-  address?: {};
-}
