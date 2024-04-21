@@ -15,8 +15,9 @@ function workProfileServices() {
     formData.append("skills", JSON.stringify(data.skills));
     formData.append('portfolios', JSON.stringify(data.portfolios));
     for (let i = 0; i < data.portfolios.length; i++) {  
-    if (data.portfolios[i].image) {
-        formData.append(`portfolio_${i + 1}_image`, data.portfolios[i].image);
+      const image = data.portfolios[i].image;
+      if (image) {
+        formData.append(`portfolio_${i + 1}_image`, image);
       }
     }
     return workProfileApi.createWorkProfile(formData);

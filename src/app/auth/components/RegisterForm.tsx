@@ -28,27 +28,10 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function RegisterForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [email, setEmail] = useState("");
-  const { loading, error, handleAuthFormSubmits } = useFormSubmitter();
+  const {  handleAuthFormSubmits } = useFormSubmitter();
 
   const router = useRouter();
-  useEffect(() => {
-    let verifiedEmail = localStorage.getItem("unVerifiedEmail");
-    if (verifiedEmail) {
-      verifiedEmail = JSON.parse(verifiedEmail);
-      unAuthenticatedRequest
-        .get(`/auth/register`, {
-          params: {
-            email: verifiedEmail,
-          },
-        })
-        .then((res) => {
-          router.replace("/auth/register/create-account");
-        })
-        .catch((err) => {
-          console.log("err", err.response.data.message);
-        });
-    }
-  }, []);
+
 
   async function handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault();

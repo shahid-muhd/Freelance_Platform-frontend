@@ -7,3 +7,30 @@ export const phoneValidator = (phone: string) => {
 
   return phoneNumber;
 };
+
+export const nameValidator = (name: string) => {
+  let modifiedName = name.replace(/^\s+|\s+\g/, "").replace(/\s{2,}/g, " ");
+
+  return modifiedName;
+};
+
+export const budgetValidator = (budget: string) => {
+  let enteredBudget = Number(budget);
+
+  if (enteredBudget > 15000 || enteredBudget < 30) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export const passwordValidators = (
+  passwordFirst: string,
+  passwordSecond: string
+) => {
+  if (passwordFirst !== passwordSecond) {
+    return false;
+  }
+
+  return true;
+};

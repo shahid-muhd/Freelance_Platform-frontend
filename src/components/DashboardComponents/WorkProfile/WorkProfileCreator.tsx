@@ -27,7 +27,7 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { Badge } from "@/components/ui/badge";
 import { RxCross1 } from "react-icons/rx";
 import workProfileServices from "@/app/services/workProfileServices";
-import { SkillSearchComponent } from "./skillSearchComponent";
+import { SkillSearchComponent } from "../../skillSelectorComponents/skillSearchComponent";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import PortfolioCreateComponent from "./PortfolioCreateComponent";
 import {
@@ -35,12 +35,12 @@ import {
   WorkProfileContextProvider,
 } from "@/utils/context/contextProviders";
 import Image from "next/image";
+import { SkillsType, Overview } from "@/utils/types";
 import PortfolioCreationManager from "@/app/services/PortfolioCreationManager";
-import { Skills, WorkProfileOverview } from "@/utils/types";
 
 function WorkProfileCreator() {
   const [isOpen, setIsOpen] = useState(false);
-  const [skills, setSkills] = useState<Skills>(null);
+  const [skills, setSkills] = useState<SkillsType>(null);
   const [skillInput, setskillInput] = useState("");
   const [skillsAvailable, setSkillsAvailable] = useState([""]);
   const { getSkillSuggestion } = workProfileServices();
@@ -50,7 +50,7 @@ function WorkProfileCreator() {
   const { removePortfolio } = PortfolioCreationManager();
   const { createWorkProfile } = workProfileServices();
   const [workProfileOverview, setworkProfileOverview] =
-    useState<WorkProfileOverview>({
+    useState<Overview>({
       title: "",
       description: "",
     });
@@ -88,7 +88,7 @@ function WorkProfileCreator() {
     }
   };
 
-  const handleChange = (
+  const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
@@ -120,7 +120,7 @@ function WorkProfileCreator() {
 
   return (
     <div>
-      {/* <WorkProfileContextProvider> */}
+    
       <Dialog open={isOpen}>
         <DialogTrigger asChild>
           <div
@@ -158,7 +158,7 @@ function WorkProfileCreator() {
                         <div className="space-y-1">
                           <Label htmlFor="title">Profile Title</Label>
                           <Input
-                            onChange={handleChange}
+                            onChange={handleInputChange}
                             id="title"
                             name="title"
                             placeholder="Eg : Front End Developer"
@@ -167,7 +167,7 @@ function WorkProfileCreator() {
                         <div className="space-y-1">
                           <Label htmlFor="description">Summary</Label>
                           <Textarea
-                            onChange={handleChange}
+                            onChange={handleInputChange}
                             className="min-h-24 max-h-44"
                             id="description"
                             name="description"
@@ -342,7 +342,7 @@ function WorkProfileCreator() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {/* </WorkProfileContextProvider> */}
+
     </div>
   );
 }

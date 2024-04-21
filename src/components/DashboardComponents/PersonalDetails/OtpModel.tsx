@@ -15,7 +15,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
-import userCrudServices from "@/app/services/userCrudServices";
+import userProfileServices from "@/app/services/userProfileServices";
 import { verificationParams } from "@/utils/types";
 
 type Props = {
@@ -27,32 +27,39 @@ type Props = {
 };
 function OtpModel(props: Props) {
   const [otp, setOtp] = useState("");
-  const { handleDataVerifications } = userCrudServices();
-
+  const otpType = props.otpType;
+  const inputLength = props.otpType == "email" ? 6 : 4;
+  const { handleDataVerifications } = userProfileServices();
+  const [loading, setLoading] = useState(false);
   const closeModel = () => {
     props.setIsModelOpen(false);
   };
 
   function handleOtpSubmit() {
-    console.log(props.otpType);
+    setLoading(true);
     let data: any = {
       otp: "",
     };
-    if (props.otpType == "email") {
+    if (otpType == "email") {
       data = {
         otp,
         email: props.email,
       };
     }
-    if (props.otpType == "phone") {
+    if (otpType == "phone") {
       data = {
         otp,
         phone: props.phone,
       };
     }
-    handleDataVerifications({ data }).then((res) => {
-      closeModel();
-    });
+    handleDataVerifications({ data })
+      .then(() => {
+        setOtp("");
+        closeModel();
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
   return (
     <div>
@@ -64,7 +71,7 @@ function OtpModel(props: Props) {
                 <p>Enter One Time Password</p>
 
                 <p className="text-sm  ">
-                  A one time password is sent your email
+                  A one time password is sent your {otpType}
                 </p>
               </div>
             </DialogTitle>
@@ -72,12 +79,13 @@ function OtpModel(props: Props) {
               <div>
                 <InputOTP
                   value={otp}
+                  required={true}
                   onChange={(value) => setOtp(value)}
-                  maxLength={6}
+                  maxLength={inputLength}
                   render={({ slots }) => (
                     <>
-                      <InputOTPGroup className="gap-2">
-                        {slots.slice(0, 6).map((slot, index) => (
+                      <InputOTPGroup  className="gap-2">
+                        {slots.slice(0, inputLength).map((slot, index) => (
                           <InputOTPSlot key={index} {...slot} />
                         ))}
                       </InputOTPGroup>
@@ -94,7 +102,7 @@ function OtpModel(props: Props) {
               <Button onClick={closeModel} variant={"outline"}>
                 Cancel
               </Button>{" "}
-              <Button onClick={handleOtpSubmit} variant={"secondary"}>
+              <Button onClick={handleOtpSubmit} disabled={otp.length==inputLength?false:true} variant={"secondary"}>
                 Submit
               </Button>{" "}
             </div>

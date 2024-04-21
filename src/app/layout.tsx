@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import "@fontsource/lobster"; // Import Lobster font
-import NavBar from "@/components/ui/navbar/NavBar";
+import NavBar from "@/components/navbar/NavBar";
 import { ThemeProvider } from "@/utils/ThemeProvider";
 import {
   UserContextProvider,
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunito.className} `}>
-        <main>
+        <main className="px-10">
           <DisablerContextProvider>
             <UserContextProvider>
               <WorkProfileContextProvider>

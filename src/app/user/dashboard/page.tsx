@@ -7,11 +7,11 @@ import { LuBuilding2 } from "react-icons/lu";
 import { FaStar } from "react-icons/fa";
 import UserDetailsComponent from "../../../components/DashboardComponents/PersonalDetails/userDetailsComponent";
 import JobOverviewComponent from "../../../components/DashboardComponents/JobOverviewComponent";
-import userCrudServices from "@/app/services/userCrudServices";
+import userProfileServices from "@/app/services/userProfileServices";
 import WorkProfiles from "../../../components/DashboardComponents/WorkProfile/WorkProfiles";
 import workProfileServices from "@/app/services/workProfileServices";
 import { WorkProfile } from "@/utils/types";
-
+import { PiSignOutBold } from "react-icons/pi";
 interface MenuItems {
   id: number;
   name: string;
@@ -20,7 +20,7 @@ interface MenuItems {
 
 function page() {
   const [currentMenuId, setCurrentMenuId] = useState(1);
-  const { getUserDetails, handleLogout } = userCrudServices();
+  const { getUserDetails, handleLogout } = userProfileServices();
   const { getWorkProfiles } = workProfileServices();
   const [workProfiles, setworkProfiles] = useState<WorkProfile[] | null>(null);
   const menuIdChanger = (menuId: number) => {
@@ -33,7 +33,7 @@ function page() {
 
     getWorkProfiles().then((res: any) => {
       console.log(JSON.parse(res));
-      
+
       setworkProfiles(JSON.parse(res));
     });
   }, []);
@@ -107,9 +107,10 @@ function page() {
                   className={` sidebar-menu text-left  w-full flex gap-3 items-baseline  p-2 px-3 rounded-md mb-5 hover:cursor-pointer  `}
                 >
                   <div>
-                    <FaStar />
+                    <PiSignOutBold size={20} />
                   </div>
-                  <p className="ml-2 text-lg">Log Out</p>
+
+                  <p className="ml-2 text-lg ">Log Out</p>
                 </div>
               </div>
             </div>

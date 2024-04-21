@@ -2,8 +2,8 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
-
-import userCrudServices from "@/app/services/userCrudServices";
+import userProfileServices from "@/app/services/userProfileServices";
+import { useUserContext } from "../context/contextProviders";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,22 +12,22 @@ interface ProtectedRouteProps {
 const RouteProtection = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { getUserDetails } = userCrudServices();
-
+  const { getUserDetails } = userProfileServices();
+  const affectedPathnames=["/auth/login", "/auth/register", "auth/create-account"]
   useEffect(() => {
-    if (
-      pathname == "/auth/login" ||
-      "/auth/register" ||
-      "auth/create-account"
-    ) {
-      getUserDetails()
-        .then((res) => {
-          console.log(res);
 
-          router.replace("/user/dashboard"); // Redirect authenticated users away from login page
-        })
-        .catch(() => {});
-    }
+    getUserDetails().then(()=>{
+      if (affectedPathnames.includes(pathname)) {
+        router.replace("/user/dashboard");
+      }
+    }).catch(()=>{
+      localStorage.clear()
+
+      if (!affectedPathnames.includes(pathname)) {
+        router.replace("/auth/login");
+      }
+    })
+
   }, [pathname]);
 
   return <>{children}</>;

@@ -8,15 +8,20 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useFormSubmitter } from "../../../services/formSubmit";
+import { UserData } from "@/utils/types";
+import { nameValidator } from "@/utils/validators/formValidators";
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 function page({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const { loading, error, handleAuthFormSubmits } = useFormSubmitter();
+  const [data, setData] = useState({
+    first_name: "",
+    last_name: "",
+    password: "",
+  });
+
+  const { handleAuthFormSubmits } = useFormSubmitter();
 
   useEffect(() => {
     let verifiedEmail = localStorage.getItem("unVerifiedEmail");
@@ -24,13 +29,33 @@ function page({ className, ...props }: UserAuthFormProps) {
     verifiedEmail && setEmail(JSON.parse(verifiedEmail));
   }, []);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
+    if (name!='password') {
+     var cleanedValue=nameValidator(value)
+    }
+
+    setData((prevData) => ({
+      ...prevData,
+      [name]:cleanedValue,
+    }));
+  };
+
   async function handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    const first_name = firstName;
-    const last_name = lastName;
-    handleAuthFormSubmits("accountCreation", { email, password, last_name });
-  }
+    setIsLoading(true);
 
+    await handleAuthFormSubmits("accountCreation", {
+      email,
+      password: data.password,
+      first_name: data.first_name,
+      last_name: data.last_name,
+    });
+
+    setIsLoading(false);
+  }
+  
   return (
     <div
       className="container flex  justify-center items-center  h-svh"
@@ -40,7 +65,7 @@ function page({ className, ...props }: UserAuthFormProps) {
         <div className="content-wrapper p-3 w-full">
           <div className="flex flex-col space-y-2 text-center mt-5 mb-24">
             <h1 className="text-2xl font-semibold tracking-tight">
-              Enter Name And Passsword
+              Provide your name and passsword
             </h1>
             <p className="text-sm text-muted-foreground">
               Enter a secure password for your account
@@ -69,29 +94,34 @@ function page({ className, ...props }: UserAuthFormProps) {
                   <div className="grid gap-2">
                     <Input
                       id="first_name"
+                      name="first_name"
                       placeholder="First Name"
                       type="text"
                       autoCapitalize="none"
                       autoCorrect="off"
                       aria-autocomplete="none"
                       autoComplete="off"
-                      maxLength={15}
-                      onChange={(e) => setFirstName(e.target.value)}
+                      minLength={1}
+                      maxLength={15}    
+                      value={data.first_name}
+                      onChange={(e) => handleInputChange(e)}
                       disabled={isLoading}
                     />
                   </div>
                   <div className=" grid gap-2">
                     <Input
                       id="last_name"
+                      name="last_name"
                       placeholder="Last Name"
                       type="text"
                       autoCapitalize="none"
                       autoCorrect="off"
                       aria-autocomplete="none"
                       autoComplete="off"
-                      minLength={15}
-                      maxLength={15}
-                      onChange={(e) => setLastName(e.target.value)}
+                      value={data.last_name}
+                      minLength={0}
+                      maxLength={50}
+                      onChange={(e) => handleInputChange(e)}
                       disabled={isLoading}
                     />
                   </div>
@@ -99,6 +129,7 @@ function page({ className, ...props }: UserAuthFormProps) {
                 <div className="grid gap-2">
                   <Input
                     id="password"
+                    name="password"
                     placeholder="password"
                     type="password"
                     autoCapitalize="none"
@@ -107,7 +138,8 @@ function page({ className, ...props }: UserAuthFormProps) {
                     autoComplete="off"
                     minLength={8}
                     maxLength={100}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={data.password}
+                    onChange={(e) => handleInputChange(e)}
                     disabled={isLoading}
                   />
                 </div>

@@ -10,6 +10,7 @@ type userCredentials = {
   password?: string;
   first_name?: string;
   last_name?: string;
+  otp?: string;
 };
 
 export const login = ({ email, password }: userCredentials) => {
@@ -23,15 +24,27 @@ export const Registration = ({
   last_name,
 }: userCredentials): Promise<AxiosResponse<any>> => {
   if (password == null) {
+    console.log('em: ',email);
     return unAuthenticatedRequest.post("/auth/register/", { email });
   } else {
     return unAuthenticatedRequest.post("/auth/create-account/", {
       email,
       password,
       first_name,
-      last_name
+      last_name,
     });
   }
+};
+
+export const requestAccountRecovery = ({ email }: userCredentials) => {
+  return unAuthenticatedRequest.post("/auth/recover/", { email });
+};
+export const recoverAccount = ({ email, password, otp }: userCredentials) => {
+  return unAuthenticatedRequest.put("/auth/recover/", {
+    email,
+    password,
+    otp,
+  });
 };
 
 export const logout = () => {
@@ -44,7 +57,6 @@ export const logout = () => {
     refresh_token: refresh_token,
   });
 };
-
 
 export const checkAuthentication = () => {
   return primaryRequest.post("/auth/check_auth/");

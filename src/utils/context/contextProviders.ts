@@ -16,12 +16,10 @@ export const [DisablerContextProvider, useDisablerContext] =
   constate(useDisabler);
 
 function useUserData() {
-  const [user, setUser] = useState<UserData | null>({
-    user: { first_name: "", last_name: "", email: "", phone: "" },
-  });
-  const setUserData = (data: UserData | null) => setUser(data);
+  const [user, setUser] = useState<UserData | null>();
+  
 
-  return { user, setUserData };
+  return { user, setUser };
 }
 
 export const [UserContextProvider, useUserContext] = constate(useUserData);

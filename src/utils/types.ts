@@ -1,5 +1,16 @@
 import { Url } from "url";
 
+type SkillsType = string[] | null;
+type skill={
+  id?: number;
+  skills: string;
+}
+
+// interface Skills extends Array<skill> {}
+interface Skills {
+  id?: number;
+  skills?: SkillsType;
+}
 type ProfileFrom = {
   first_name?: string;
   last_name?: string;
@@ -9,10 +20,8 @@ type ProfileFrom = {
 
 type FormSubmitParams = {
   data: {
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    phone?: string;
+    user?: User;
+    address?: Address;
   };
 };
 
@@ -24,15 +33,26 @@ type verificationParams = {
   };
 };
 
-type UserData = {
-  user?: {
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    phone?: string;
-  };
+type User = {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  phone?: string;
+};
 
-  address?: {};
+type Address = {
+  house_name: string;
+  street: string;
+  place: string;
+  city: string;
+  state: string;
+  country: string;
+  postal_code: string;
+};
+
+type UserData = {
+  user?: User;
+  address?: Address;
 };
 
 interface PortfolioItem {
@@ -43,24 +63,26 @@ interface PortfolioItem {
   image: File | null;
 }
 
-interface WorkProfileOverview {
+interface Overview {
   title: string;
   description: string;
 }
-type Skills = string[] | null;
 type PortfoliosState = PortfolioItem[];
 
-type NewWorkProfile = {
-  overview: WorkProfileOverview;
-  skills: Skills;
+interface NewWorkProfile extends Skills {
+  overview: Overview;
   portfolios: PortfoliosState;
-};
-
-interface WorkProfile extends WorkProfileOverview {
-  id: number;
-  skills: string[];
 }
 
+interface WorkProfile extends Overview, Skills {
+  id: number;
+}
+
+interface Project extends Overview, Skills {
+  budget: string;
+  features: string[];
+  expertise: string;
+}
 export type {
   ProfileFrom,
   FormSubmitParams,
@@ -68,8 +90,11 @@ export type {
   UserData,
   PortfolioItem,
   WorkProfile,
-  WorkProfileOverview,
-  NewWorkProfile ,
-  Skills,
+  Overview,
+  NewWorkProfile,
+  SkillsType,
   PortfoliosState,
+  Address,
+  Project,
+  Skills
 };
