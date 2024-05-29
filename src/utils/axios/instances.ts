@@ -48,10 +48,17 @@ primaryRequest.interceptors.response.use(
     // Check if the error response has a specific status code
     if (error.response && error.response.status === 401) {
       console.log("error from interceptor");
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
       if (window.location.pathname !== "/auth/login") {
         window.location.replace("/auth/login/");
       }
       console.error("Unauthorized access");
+    }
+
+    if (error.response && error.response.status === 402) {
+      if (window.location.pathname == "/projects/create")
+      window.location.replace("/payments/subscriptions/plans");
     }
 
     // Return the error
@@ -76,6 +83,7 @@ unAuthenticatedRequest.interceptors.response.use(
 
   (error) => {
     // Return the error
+
     return Promise.reject(error);
   }
 );

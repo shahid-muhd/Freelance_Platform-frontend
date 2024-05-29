@@ -1,12 +1,13 @@
 import { userCrudApi } from "@/api/userCrudApi";
-import { useUserContext } from "@/utils/context/contextProviders";
+import { useUserContext } from "@/utils/context/stateContextProviders";
 import { useToast } from "@/components/ui/use-toast";
 
 import {
   FormSubmitParams,
+  User,
   UserData,
   verificationParams,
-} from "../../utils/types";
+} from "../../utils/types/types";
 import {
   Dialog,
   DialogContent,
@@ -18,18 +19,27 @@ import {
 } from "@/components/ui/dialog";
 import { logout } from "@/api/authenticationApi";
 import { useRouter } from "next/navigation";
-function userProfileServices() {
-  const { getUser, updateUser, verifyUserData } = userCrudApi;
+function useUserProfileServices() {
+  const {
+    getCurrentUser: getUser,
+    updateUser,
+    verifyUserData,
+    getSpecifiUser,
+  } = userCrudApi;
   const { setUser, user } = useUserContext();
   const { toast } = useToast();
   const router = useRouter();
 
-  const getUserDetails = async () => {
+  const getCurrentUserDetails = async () => {
     const user = await getUser();
     if (user) {
       setUser(user);
     }
-    console.log(user);
+  };
+
+  const getSpecificUserDetails = async (clientId: number) => {
+    const user = getSpecifiUser(clientId);
+    return user as UserData;
   };
 
   const toaster = (updatedData: string) => {
@@ -41,8 +51,7 @@ function userProfileServices() {
 
   const handleProfileFormSubmits = async ({ data }: FormSubmitParams) => {
     let dataType: "user" | "address" = data.user ? "user" : "address";
-    console.log('my data ', data);
-    
+
     updateUser(data).then((res) => {
       data &&
         setUser((prevUserData: UserData | null | undefined) => {
@@ -50,8 +59,8 @@ function userProfileServices() {
           return {
             ...prevUserData,
             [dataType]: {
-              ...prevUserData[dataType], 
-              ...data[dataType], 
+              ...prevUserData[dataType],
+              ...data[dataType],
             },
           };
         });
@@ -96,6 +105,20 @@ function userProfileServices() {
     }
   };
 
+  const getProfileCompletionStatus = (userData: UserData) => {
+    let completionStatus = 0;
+    const userBasics = userData.user;
+
+    userBasics?.first_name && (completionStatus += 10);
+    userBasics?.last_name && (completionStatus += 10);
+    userBasics?.phone && (completionStatus += 20);
+    userBasics?.profile_image && (completionStatus += 20);
+
+    userData.address && (completionStatus += 40);
+
+    return completionStatus
+  };
+
   const handleLogout = () => {
     logout().then(() => {
       localStorage.clear();
@@ -104,11 +127,13 @@ function userProfileServices() {
     });
   };
   return {
-    getUserDetails,
+    getCurrentUserDetails,
     handleProfileFormSubmits,
     handleDataVerifications,
+    getProfileCompletionStatus,
     handleLogout,
+    getSpecificUserDetails,
   };
 }
 
-export default userProfileServices;
+export default useUserProfileServices;

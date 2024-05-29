@@ -1,6 +1,6 @@
 "use client";
 import { useFormSubmitter } from "@/app/services/formSubmit";
-import userProfileServices from "@/app/services/userProfileServices";
+import useUserProfileServices from "@/app/services/userProfileServices";
 import { Icons } from "@/components/icons/social-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,14 +8,14 @@ import { Label } from "@/components/ui/label";
 import { passwordValidators } from "@/utils/validators/formValidators";
 import React, { useState } from "react";
 
-function page() {
+function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [otp, setOtp] = useState("");
   const [isFieldDisabled, setIsFieldDisabled] = useState(false);
-  const { handleDataVerifications } = userProfileServices();
+  const { handleDataVerifications } = useUserProfileServices();
   const { handleAuthFormSubmits } = useFormSubmitter();
 
   const handlerecoveryRequest = async (e: React.SyntheticEvent) => {
@@ -124,7 +124,7 @@ function page() {
                       <Input
                         id="otp"
                         type="text"
-                        placeholder="Enter the noe time password you recieved in your email."
+                        placeholder="Enter the noe time password you received in your email."
                         required
                         autoCapitalize="none"
                         autoCorrect="off"
@@ -167,4 +167,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

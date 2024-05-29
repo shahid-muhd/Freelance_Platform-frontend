@@ -89,7 +89,7 @@ export function useFormSubmitter() {
       console.log(err);
       
       toast({
-        className: "bg-secondary border-6",
+        className: "bg-secondary border-6 ",
         description:
           err.response?.data?.detail ||
           err.response?.data ||

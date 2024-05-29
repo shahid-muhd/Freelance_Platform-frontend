@@ -2,7 +2,7 @@ import React from "react";
 import ProjectListings from "./components/projectListings";
 import SideBarProfile from "./components/sideBarProfile";
 
-function page() {
+function Page() {
   return (
     <div className="flex gap-5 w-100  min-h-screen ">
       <div className="w-9/12   rounded-xl">
@@ -19,4 +19,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

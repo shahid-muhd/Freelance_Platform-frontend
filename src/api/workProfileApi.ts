@@ -1,19 +1,26 @@
 import { AxiosResponse } from "axios"; // Import AxiosResponse type if needed
 import { primaryRequest } from "../utils/axios/instances";
-import { NewWorkProfile } from "@/utils/types";
-// Assuming you have defined primaryRequest elsewhere
+import { NewWorkProfile, WorkProfile } from "@/utils/types/types";
 
 type HttpMethod = "get" | "post" | "patch" | "delete";
-const url = "/work_profiles/";
+const url = "/work-profiles/profile/";
+type UserSpecificity = {
+  userSpecific: boolean;
+};
 const handleApiRequest = async <T>(
   method: HttpMethod,
-
-  data?: NewWorkProfile
+  data?: WorkProfile| NewWorkProfile | UserSpecificity|null,
+  slug?: string | null
 ): Promise<T> => {
+  let requestUrl = url;
+
+  if (slug) {
+    requestUrl += `${slug}/`;
+  }
   try {
     let response: AxiosResponse<T> | null = null;
     if (method === "get") {
-      response = await primaryRequest.get<T>(url);
+      response = await primaryRequest.get<T>(requestUrl, { params: { data } });
     } else if (method === "post") {
       response = await primaryRequest.post<T>(url, data, {
         headers: {
@@ -21,9 +28,9 @@ const handleApiRequest = async <T>(
         },
       });
     } else if (method === "patch") {
-      response = await primaryRequest.patch<T>(url, data);
+      response = await primaryRequest.patch<T>(requestUrl, data);
     } else if (method === "delete") {
-      response = await primaryRequest.delete<T>(url);
+      response = await primaryRequest.delete<T>(requestUrl);
     }
     if (response === null) {
       throw new Error("Response is null");
@@ -31,13 +38,19 @@ const handleApiRequest = async <T>(
 
     return response.data;
   } catch (error) {
-    console.error(`Error in ${method.toUpperCase()} request to ${url}:`, error);
+    console.error(
+      `Error in ${method.toUpperCase()} request to ${requestUrl}:`,
+      error
+    );
     throw error;
   }
 };
 
 export const workProfileApi = {
-  getWorkProfiles: () => handleApiRequest("get"),
-
-  createWorkProfile: (data: any) => handleApiRequest<NewWorkProfile>("post", data),
+  getWorkProfiles: (userSpecific: boolean, slug?: string | null) =>
+    handleApiRequest("get", { userSpecific: userSpecific }, slug),
+  createWorkProfile: (data: any) =>
+    handleApiRequest<NewWorkProfile>("post", data),
+  updateWorkProfile:(data:WorkProfile,slug:string)=>handleApiRequest('patch',data,slug),
+  deleteWorkProfile:( slug?: string | null)=>handleApiRequest("delete",null,slug)
 };

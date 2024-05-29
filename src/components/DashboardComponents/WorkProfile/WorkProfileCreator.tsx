@@ -26,29 +26,29 @@ import { Textarea } from "@/components/ui/textarea";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Badge } from "@/components/ui/badge";
 import { RxCross1 } from "react-icons/rx";
-import workProfileServices from "@/app/services/workProfileServices";
+import useWorkProfileServices from "@/app/services/workProfileServices";
 import { SkillSearchComponent } from "../../skillSelectorComponents/skillSearchComponent";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import PortfolioCreateComponent from "./PortfolioCreateComponent";
 import {
   useWorkProfileContext,
   WorkProfileContextProvider,
-} from "@/utils/context/contextProviders";
+} from "@/utils/context/stateContextProviders";
 import Image from "next/image";
-import { SkillsType, Overview } from "@/utils/types";
-import PortfolioCreationManager from "@/app/services/PortfolioCreationManager";
+import { SkillsType, Overview } from "@/utils/types/types";
+import usePortfolioCreationManager from "@/app/services/PortfolioCreationManager";
+import PortfolioCreateComponent from "./PortfolioCreateComponent";
 
 function WorkProfileCreator() {
   const [isOpen, setIsOpen] = useState(false);
   const [skills, setSkills] = useState<SkillsType>(null);
   const [skillInput, setskillInput] = useState("");
   const [skillsAvailable, setSkillsAvailable] = useState([""]);
-  const { getSkillSuggestion } = workProfileServices();
+  const { getSkillSuggestion } = useWorkProfileServices();
   const [isPortfolioCreateModel, setisPortfolioCreateModel] = useState(false);
   const [showRemoveBtn, setShowRemoveBtn] = useState(false);
   const { portfolios } = useWorkProfileContext();
-  const { removePortfolio } = PortfolioCreationManager();
-  const { createWorkProfile } = workProfileServices();
+  const { removePortfolio } = usePortfolioCreationManager();
+  const { createWorkProfile } = useWorkProfileServices();
   const [workProfileOverview, setworkProfileOverview] =
     useState<Overview>({
       title: "",
@@ -57,14 +57,13 @@ function WorkProfileCreator() {
 
   useEffect(() => {
     let query = skillInput;
-    console.log(query);
-
+  
     if (query) {
       getSkillSuggestion(query).then((response): void => {
         console.log(response.data);
 
         setSkillsAvailable(response.data);
-        console.log("useeefect skill availability setting working");
+     
       });
     }
   }, [skillInput]);
@@ -198,7 +197,7 @@ function WorkProfileCreator() {
                           />
                         </div>
                         <SkillSearchComponent
-                          skills={skills}
+                 
                           skillsAvailable={skillsAvailable}
                           addSkill={addSkill}
                         />

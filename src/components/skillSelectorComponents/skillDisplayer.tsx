@@ -1,32 +1,32 @@
-import { SkillsType } from "@/utils/types";
+import { SkillsType } from "@/utils/types/types";
 import React, { useEffect, useState } from "react";
 import { SkillSearchComponent } from "./skillSearchComponent";
 import { Input } from "../ui/input";
 import { Badge } from "../ui/badge";
 import { RxCross1 } from "react-icons/rx";
-import workProfileServices from "@/app/services/workProfileServices";
+import useWorkProfileServices from "@/app/services/workProfileServices";
 
 type Props = {
   skills: SkillsType;
-  setSkills: React.Dispatch<React.SetStateAction<any>>;
+  setSkills: (skill:string|string[])=>void;
 };
 
 function SkillDisplayer(props:Props) {
  
   const [skillInput, setskillInput] = useState("");
   const [skillsAvailable, setSkillsAvailable] = useState([""]);
-  const { getSkillSuggestion } = workProfileServices();
+  const { getSkillSuggestion } = useWorkProfileServices();
 
   useEffect(() => {
     let query = skillInput;
-    console.log(query);
+
 
     if (query) {
       getSkillSuggestion(query).then((response): void => {
-        console.log(response.data);
+    
 
         setSkillsAvailable(response.data);
-        console.log("useeefect skill availability setting working");
+     
       });
     }
   }, [skillInput]);
@@ -35,17 +35,14 @@ function SkillDisplayer(props:Props) {
     if ((props.skills?.length && props.skills.length >= 10) || props.skills?.includes(skill)) {
       return false;
     } else {
-      props.setSkills((prevSkills:SkillsType) => {
-        const updatedSkills = prevSkills || []; // Initialize as empty array if null
-        return [...updatedSkills, skill];
-      });
+      props.setSkills(skill)
+      setskillInput('')
     }
   };
 
   const removeSkill = (removableSkill: string) => {
     if (removableSkill && props.skills) {
       const updatedSkills = props.skills.filter((skill) => skill !== removableSkill);
-      // Update the state with the filtered skills array
       props.setSkills(updatedSkills);
     }
   };
@@ -63,7 +60,7 @@ function SkillDisplayer(props:Props) {
       </div>
       <div>
         <SkillSearchComponent
-          skills={props.skills}
+       
           skillsAvailable={skillsAvailable}
           addSkill={addSkill}
         />

@@ -1,8 +1,8 @@
-import { useWorkProfileContext } from "@/utils/context/contextProviders";
-import { PortfolioItem } from "@/utils/types";
-import React from "react";
+import { useWorkProfileContext } from "@/utils/context/stateContextProviders";
+import { PortfolioItem } from "@/utils/types/types";
 
-function PortfolioCreationManager() {
+
+function usePortfolioCreationManager() {
   const { portfolios, setPortfolios } = useWorkProfileContext();
 
   const handlePortfolioFormSubmit = (portfolioData: PortfolioItem) => {
@@ -33,4 +33,4 @@ function PortfolioCreationManager() {
   return { handlePortfolioFormSubmit, removePortfolio };
 }
 
-export default PortfolioCreationManager;
+export default usePortfolioCreationManager;

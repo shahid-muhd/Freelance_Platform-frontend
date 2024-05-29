@@ -8,9 +8,17 @@ import {
   UserContextProvider,
   DisablerContextProvider,
   WorkProfileContextProvider,
-} from "@/utils/context/contextProviders";
+  SubscriptionContextProvider,
+} from "@/utils/context/stateContextProviders";
 import { Toaster } from "@/components/ui/toaster";
-import RouteProtection from "@/utils/manageRoutes/RouteProtection";
+import RouteProtection from "@/utils/controllers/RouteProtection";
+import UserInjector from "@/utils/controllers/userInjector";
+import PromoBar from "@/components/promotionBar/promoBar";
+
+
+import { NotificationSheet } from "@/components/NotificationSheet/NotificationSheet";
+import { VideoChatSocketProvider } from "@/utils/context/videoChatSocketContext";
+import { NotificationProvider } from "@/utils/context/NotificationContext";
 
 const nunito = Nunito_Sans({ subsets: ["latin"] });
 
@@ -27,24 +35,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunito.className} `}>
-        <main className="px-10">
+        <main className="px-5 md:px-10">
           <DisablerContextProvider>
             <UserContextProvider>
-              <WorkProfileContextProvider>
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="dark"
-                  enableSystem
-                  disableTransitionOnChange
-                >
+              <SubscriptionContextProvider>
+                <UserInjector>
                   <RouteProtection>
-                    <NavBar />
+                    <NotificationProvider>
+                      <WorkProfileContextProvider>
+                       
+                          <ThemeProvider
+                            attribute="class"
+                            defaultTheme="dark"
+                            enableSystem
+                            disableTransitionOnChange
+                          >
+                            <NavBar />
+                            <NotificationSheet />
 
-                    {children}
+                            {children}
+                            <Toaster />
+                          </ThemeProvider>
+                      
+                      </WorkProfileContextProvider>
+                    </NotificationProvider>
                   </RouteProtection>
-                  <Toaster />
-                </ThemeProvider>
-              </WorkProfileContextProvider>
+                </UserInjector>
+              </SubscriptionContextProvider>
             </UserContextProvider>
           </DisablerContextProvider>
         </main>

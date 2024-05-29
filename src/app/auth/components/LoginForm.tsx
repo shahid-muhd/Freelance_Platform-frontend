@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import GoogleAuthBtn from "./GoogleAuthBtn";
 import { login } from "@/api/authenticationApi";
 import { useFormSubmitter } from "../../services/formSubmit";
-import RouteProtection from "@/utils/manageRoutes/RouteProtection";
+import RouteProtection from "@/utils/controllers/RouteProtection";
 import Link from "next/link";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -77,7 +77,7 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
           </div>
         </div>
       </form>
-      <div className="relative">
+      {/* <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
@@ -86,8 +86,8 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
             Or continue with
           </span>
         </div>
-      </div>
-      <GoogleAuthBtn />
+      </div> */}
+      {/* <GoogleAuthBtn /> */}
     </div>
   );
 }

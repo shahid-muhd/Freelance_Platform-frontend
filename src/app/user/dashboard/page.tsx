@@ -5,47 +5,46 @@ import { FaNetworkWired } from "react-icons/fa6";
 import { RxDashboard } from "react-icons/rx";
 import { LuBuilding2 } from "react-icons/lu";
 import { FaStar } from "react-icons/fa";
-import UserDetailsComponent from "../../../components/DashboardComponents/PersonalDetails/userDetailsComponent";
-import JobOverviewComponent from "../../../components/DashboardComponents/JobOverviewComponent";
-import userProfileServices from "@/app/services/userProfileServices";
-import WorkProfiles from "../../../components/DashboardComponents/WorkProfile/WorkProfiles";
-import workProfileServices from "@/app/services/workProfileServices";
-import { WorkProfile } from "@/utils/types";
+import UserDetailsComponent from "../../../components/DashboardComponents/personalDetails/currentUserDetailsComponent";
+import UserProjects from "../../../components/DashboardComponents/projectOverview/ProjectsMenu";
+import useUserProfileServices from "@/app/services/userProfileServices";
+import WorkProfiles from "../../../components/DashboardComponents/workProfile/WorkProfiles";
+import useWorkProfileServices from "@/app/services/workProfileServices";
+import { WorkProfile } from "@/utils/types/types";
 import { PiSignOutBold } from "react-icons/pi";
+import useWorkProfileStore from "@/stores/workProfileStore";
 interface MenuItems {
   id: number;
   name: string;
   icon?: JSX.Element;
 }
 
-function page() {
+function Page() {
   const [currentMenuId, setCurrentMenuId] = useState(1);
-  const { getUserDetails, handleLogout } = userProfileServices();
-  const { getWorkProfiles } = workProfileServices();
-  const [workProfiles, setworkProfiles] = useState<WorkProfile[] | null>(null);
+  const {  getCurrentUserDetails, handleLogout } = useUserProfileServices();
+  const { getWorkProfiles } = useWorkProfileServices();
+  const {workProfiles}=useWorkProfileStore()
+
   const menuIdChanger = (menuId: number) => {
     setCurrentMenuId(menuId);
   };
 
   useEffect(() => {
-    // The userDetails Service stores the fetched data in the context
-    getUserDetails();
+    getCurrentUserDetails();
+    getWorkProfiles({userSpecific:true})
 
-    getWorkProfiles().then((res: any) => {
-      console.log(JSON.parse(res));
-
-      setworkProfiles(JSON.parse(res));
-    });
   }, []);
+
+
 
   const renderComponent = useMemo(() => {
     switch (currentMenuId) {
       case 1:
         return <UserDetailsComponent />;
       case 2:
-        return <JobOverviewComponent />;
+        return <UserProjects />;
       case 3:
-        return <WorkProfiles workProfiles={workProfiles} />;
+        return <WorkProfiles/>;
       case 4:
         return null;
       default:
@@ -69,7 +68,7 @@ function page() {
   ];
 
   return (
-    <div className="container  h-svh p-0  ">
+    <div className="container h-svh p-0  ">
       <div className="wrapper  flex gap-4 h-5/6">
         <div className="side-panel w-1/5 h-full rounded-2xl bg-slate-100 drop-shadow-lg dark:bg-gray-900 p-10 pl-3">
           <div className="panel-menu-wrapper h-full">
@@ -125,4 +124,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

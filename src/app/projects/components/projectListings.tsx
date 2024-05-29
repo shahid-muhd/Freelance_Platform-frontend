@@ -1,138 +1,134 @@
 "use client";
 import useProjectCrudServices from "@/app/services/projectCrudServices";
 import { Input } from "@/components/ui/input";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CgDollar } from "react-icons/cg";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { FaHeadSideVirus } from "react-icons/fa6";
-
+import useProjectStore from "@/stores/projectStore";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AiFillHeart } from "react-icons/ai";
+import { useUserContext } from "@/utils/context/stateContextProviders";
+import DebouncedInput from "use-debounce";
 function ProjectListings() {
-  const { getAllProjectsService } = useProjectCrudServices();
-  useEffect(() => {
-    getAllProjectsService();
-  }, []);
+  const [searchInput, setsearchInput] = useState<string>("");
 
-  const projectFooterElements = [
-    {
-      id: 1,
-      description: "40",
-      icon: <CgDollar className="size-5" />,
-    },
-    {
-      id: 2,
-      description: "12 Weeks",
-      icon: <FaClockRotateLeft className="size-4" />,
-    },
-    {
-      id: 3,
-      description: "Intermediate",
-      icon: <FaHeadSideVirus className="size-4" />,
-    },
-  ];
+  const router = useRouter();
+  const { getAllProjectsService, saveProjectService } =
+    useProjectCrudServices();
+
+  useEffect(() => {
+    getAllProjectsService(searchInput);
+  }, [searchInput]);
+
+  const projects = useProjectStore((state) => state.projects);
+  const { user } = useUserContext();
+  const projectDetailsRoute = (id: number | undefined) => {
+    if (id && user?.user) {
+      localStorage.setItem("clientId", JSON.stringify(id));
+      localStorage.setItem("userId", JSON.stringify(user?.user.id));
+      router.push(id.toString());
+    }
+  };
+
+  const saveProject = (projectId: number) => {
+    saveProjectService(projectId);
+  };
 
   return (
-    <div className=" p-5 space-y-5">
-      <section className="search-bar-wrapper sticky top-0 w-full ">
-        <Input
-          maxLength={55}
-          className="w-96 rounded-lg bg-secondary"
-          placeholder="Search Jobs"
-        />
-      </section>
+    <div>
+      <div className=" p-5 space-y-5">
+        <section className="search-bar-wrapper sticky top-0 w-full ">
+          <Input
+            value={searchInput}
+            onChange={(e) => setsearchInput(e.target.value)}
+            maxLength={55}
+            className="w-96 rounded-lg bg-secondary"
+            placeholder="Search Jobs"
+          />
+        </section>
 
-      <section className="project-list">
-        <div className="project-wrapper space-y-5">
-          <div className="project h-52 p-5 space-y-7 bg-secondary rounded-3xl ">
-            <div className="project-head space-y-3 w-full  ">
-            <div className="project-title-wrapper flex justify-between">
-                <div className="project-titl w-full text-xl truncate font-bold">
-                  <h2>Lorem ipsum dolor sit</h2>
-                </div>
-                <div className="flex w-36 gap-4">
-                  <div className="project-save-icon hover:cursor-pointer ">
-                    <AiOutlineHeart size={20} />
-                  </div>
-                  <div className="project-age  w-28 text-right">2 months ago</div>
-                </div>
-              </div>
+        <section className="project-list">
+          <div className="project-wrapper space-y-5">
+            {projects &&
+              projects.map((project) => (
+                <div
+                  key={project.id}
+                  className="project h-60  bg-secondary rounded-xl relative hover:cursor-pointer hover:bg-gray-900 "
+                >
+                  <Link href={`/projects/${project.id}`}>
+                    <div
+                      onClick={() => projectDetailsRoute(project.client)}
+                      className="p-5 space-y-5"
+                    >
+                      <div className="project-head space-y-5 w-full  ">
+                        <div className="project-title-wrapper flex justify-between">
+                          <div className="project-titl w-full text-xl truncate font-bold">
+                            <h2>{project.title}</h2>
+                          </div>
+                          <div className="flex w-36 gap-4">
+                            {
+                              <div
+                                onClick={() =>
+                                  saveProject(project.id as number)
+                                }
+                                className="project-save-icon hover:cursor-pointer  "
+                              >
+                                <AiOutlineHeart
+                                  size={20}
+                                  className="text-gray-500 "
+                                />
+                              </div>
+                            }
+                            <div className="project-age  w-28 text-right">
+                              2 hrs ago
+                            </div>
+                          </div>
+                        </div>
 
-              <div className="project-description-wrapper  h-18 line-clamp-3  text-ellipsis text-justify w-10/12">
-                <p>
-                  Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem
-                  ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum
-                  dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit
-                  amet Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem
-                  ipsum dolor sit amet Lorem ipsum dolor sit ametLorem ipsum
-                  dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit
-                  amet
-                </p>
-              </div>
-            </div>
+                        <div className="project-description-wrapper text-base  h-18 line-clamp-3  text-ellipsis text-justify w-10/12">
+                          <p>{project.description}</p>
+                        </div>
+                      </div>
 
-            <div className="project-footer w-full  ">
-              <div className="project-element-wrapper flex w-2/3 justify-between">
-                {projectFooterElements.map((element) => (
-                  <div
-                    key={element.id}
-                    className="footer-element flex items-center w-40 text-sm gap-3"
-                  >
-                    <div className="element-icon ">{element.icon}</div>
+                      <div className="project-footer w-full absolute bottom-5 ">
+                        <div className="project-element-wrapper flex w-2/3 justify-between">
+                          <div className="footer-element flex items-center w-40 text-sm gap-3">
+                            <div className="element-icon ">
+                              <CgDollar className="size-5" />
+                            </div>
 
-                    <div className="element-description">
-                      {element.description}
+                            <div className="element-description">
+                              {project.budget}
+                            </div>
+                          </div>
+                          <div className="footer-element flex items-center w-40 text-sm gap-3">
+                            <div className="element-icon ">
+                              <FaClockRotateLeft className="size-4" />
+                            </div>
+
+                            <div className="element-description">20days</div>
+                          </div>
+                          <div className="footer-element flex items-center w-40 text-sm gap-3">
+                            <div className="element-icon ">
+                              <FaHeadSideVirus className="size-4" />
+                            </div>
+
+                            <div className="element-description">
+                              {project.freelancer_expertise}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="project h-52 p-5 space-y-7 bg-secondary rounded-3xl ">
-            <div className="project-head space-y-3 w-full  ">
-              <div className="project-title-wrapper flex justify-between">
-                <div className="project-titl w-full text-xl truncate font-bold">
-                  <h2>Lorem ipsum dolor sit</h2>
+                  </Link>
                 </div>
-                <div className="flex w-36 gap-4">
-                  <div className="project-save-icon hover:cursor-pointer ">
-                    <AiOutlineHeart size={20} className="text-gray-500"/>
-                  </div>
-                  <div className="project-age  w-28 text-right">2 hrs ago</div>
-                </div>
-              </div>
-
-              <div className="project-description-wrapper  h-18 line-clamp-3  text-ellipsis text-justify w-10/12">
-                <p>
-                  Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem
-                  ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum
-                  dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit
-                  amet Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem
-                  ipsum dolor sit amet Lorem ipsum dolor sit ametLorem ipsum
-                  dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit
-                  amet
-                </p>
-              </div>
-            </div>
-
-            <div className="project-footer w-full  ">
-              <div className="project-element-wrapper flex w-2/3 justify-between">
-                {projectFooterElements.map((element) => (
-                  <div
-                    key={element.id}
-                    className="footer-element flex items-center w-40 text-sm gap-3"
-                  >
-                    <div className="element-icon ">{element.icon}</div>
-
-                    <div className="element-description">
-                      {element.description}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+              ))}
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }

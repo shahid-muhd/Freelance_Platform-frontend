@@ -1,16 +1,20 @@
 import { AxiosResponse } from "axios"; // Import AxiosResponse type if needed
 import { primaryRequest } from "../utils/axios/instances";
-// Assuming you have defined primaryRequest elsewhere
-import { ProfileFrom, UserData, verificationParams } from "../utils/types";
+
+import { UserData, verificationParams } from "../utils/types/types";
 type HttpMethod = "get" | "post" | "patch" | "delete";
 
-const url = "/auth/user/";
+let url = "";
 // Helper function to handle API requests and errors
 const handleApiRequest = async <T>(
   method: HttpMethod,
-
-  data?: UserData | verificationParams
+  data?: UserData | verificationParams | string,
+  userId?: number,
 ): Promise<T> => {
+  url = "/auth/user/";
+  if (userId) {
+    url = `/auth/user/${userId}`;
+  }
   try {
     let response: AxiosResponse<T> | null = null;
     if (method === "get") {
@@ -34,14 +38,13 @@ const handleApiRequest = async <T>(
 };
 
 export const userCrudApi = {
-  getUser: () => handleApiRequest("get"),
-
+  getCurrentUser: () => handleApiRequest("get"),
+  getSpecifiUser: (clientId: number) =>  handleApiRequest("get",'null',clientId),
   updateUser: (updatedUserData: UserData) =>
-    handleApiRequest<UserData>("patch", updatedUserData),  
+    handleApiRequest<UserData>("patch", updatedUserData),
 
   deleteUser: () => handleApiRequest<void>("delete"),
 
   verifyUserData: (data: verificationParams) =>
     handleApiRequest<verificationParams>("post", data),
 };
-

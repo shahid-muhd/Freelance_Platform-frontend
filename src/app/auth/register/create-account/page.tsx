@@ -8,11 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useFormSubmitter } from "../../../services/formSubmit";
-import { UserData } from "@/utils/types";
+import { UserData } from "@/utils/types/types";
 import { nameValidator } from "@/utils/validators/formValidators";
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-function page({ className, ...props }: UserAuthFormProps) {
+
+function Page() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [email, setEmail] = useState("");
   const [data, setData] = useState({
@@ -25,8 +25,10 @@ function page({ className, ...props }: UserAuthFormProps) {
 
   useEffect(() => {
     let verifiedEmail = localStorage.getItem("unVerifiedEmail");
-
-    verifiedEmail && setEmail(JSON.parse(verifiedEmail));
+    if (verifiedEmail) {
+      verifiedEmail=JSON.parse(verifiedEmail)
+      setEmail(verifiedEmail as string);
+    }
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +61,7 @@ function page({ className, ...props }: UserAuthFormProps) {
   return (
     <div
       className="container flex  justify-center items-center  h-svh"
-      {...props}
+
     >
       <div className=" flex justify-center w-full md:w-2/3 lg:w-1/3  p-5 h-3/5 ">
         <div className="content-wrapper p-3 w-full">
@@ -159,4 +161,4 @@ function page({ className, ...props }: UserAuthFormProps) {
   );
 }
 
-export default page;
+export default Page;

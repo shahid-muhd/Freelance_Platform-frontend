@@ -9,9 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Address } from "@/utils/types";
+import { Address } from "@/utils/types/types";
 import { nameValidator } from "@/utils/validators/formValidators";
-import userProfileServices from "@/app/services/userProfileServices";
+import useUserProfileServices from "@/app/services/userProfileServices";
 
 type Props = {
   isOpen: boolean;
@@ -29,7 +29,7 @@ function AddressModel(props: Props) {
     postal_code: "",
   };
   const [address, setAddress] = useState<Address>(addressInitial);
-  const { handleProfileFormSubmits } = userProfileServices();
+  const { handleProfileFormSubmits } = useUserProfileServices();
 
   useEffect(() => {
     props.address && setAddress(props.address);

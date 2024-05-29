@@ -1,10 +1,10 @@
-import PortfolioCreationManager from "@/app/services/PortfolioCreationManager";
+import usePortfolioCreationManager from "@/app/services/PortfolioCreationManager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useWorkProfileContext } from "@/utils/context/contextProviders";
-import { PortfolioItem } from "@/utils/types";
+import { useWorkProfileContext } from "@/utils/context/stateContextProviders";
+import { PortfolioItem } from "@/utils/types/types";
 import React, { ChangeEvent, useState } from "react";
 
 type Props = {
@@ -17,10 +17,10 @@ function PortfolioCreateComponent(props: Props) {
     title: "",
     description: "",
     link: "",
-    image: null,
+    image:null,
   });
 
-  const { handlePortfolioFormSubmit } = PortfolioCreationManager();
+  const { handlePortfolioFormSubmit } = usePortfolioCreationManager();
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

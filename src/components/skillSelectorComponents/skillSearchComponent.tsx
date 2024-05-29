@@ -4,28 +4,29 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  PopoverAnchor,
 } from "@/components/ui/popover";
 
 import { useEffect, useState } from "react";
-import workProfileServices from "@/app/services/workProfileServices";
-import { PopoverAnchor } from "@radix-ui/react-popover";
+import useWorkProfileServices from "@/app/services/workProfileServices";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RxCross1 } from "react-icons/rx";
 
 type Props = {
-  skills: string[] | null;
   skillsAvailable: string[];
   addSkill: (skill: string) => void;
 };
 export function SkillSearchComponent(props: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const addSkill=props.addSkill
+  const addSkill = props.addSkill;
   useEffect(() => {
-    if (props.skillsAvailable.length > 1) {
+    if (props.skillsAvailable.length > 0) {
       setIsOpen(true);
+    } else {
+      setIsOpen(false);
     }
   }, [props.skillsAvailable]);
-
 
   return (
     <div>
@@ -33,16 +34,23 @@ export function SkillSearchComponent(props: Props) {
         <PopoverAnchor />
         <PopoverContent>
           <div className="close-btn w-full flex justify-end">
-          <RxCross1 className="hover:cursor-pointer" onClick={()=>setIsOpen(false)} size={15}/>  
+            <RxCross1
+              className="hover:cursor-pointer"
+              onClick={() => setIsOpen(false)}
+              size={15}
+            />
           </div>
           <ScrollArea>
             <div>
               {props.skillsAvailable &&
-                props.skillsAvailable.map((skill,index) => (
+                props.skillsAvailable.map((skill, index) => (
                   <div
-                  key={index}
+                    key={index}
                     className="hover:cursor-pointer leading-7"
-                    onClick={() => addSkill(skill)}
+                    onClick={() => {
+                      addSkill(skill);
+                      setIsOpen(false);
+                    }}
                   >
                     {skill}
                   </div>

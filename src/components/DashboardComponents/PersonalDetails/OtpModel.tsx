@@ -15,8 +15,8 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
-import userProfileServices from "@/app/services/userProfileServices";
-import { verificationParams } from "@/utils/types";
+import useUserProfileServices from "@/app/services/userProfileServices";
+import { verificationParams } from "@/utils/types/types";
 
 type Props = {
   isModelOpen: boolean;
@@ -29,7 +29,7 @@ function OtpModel(props: Props) {
   const [otp, setOtp] = useState("");
   const otpType = props.otpType;
   const inputLength = props.otpType == "email" ? 6 : 4;
-  const { handleDataVerifications } = userProfileServices();
+  const { handleDataVerifications } = useUserProfileServices();
   const [loading, setLoading] = useState(false);
   const closeModel = () => {
     props.setIsModelOpen(false);

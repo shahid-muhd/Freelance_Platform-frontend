@@ -32,8 +32,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SkillSearchComponent } from "@/components/skillSelectorComponents/skillSearchComponent";
-import { SkillsType } from "@/utils/types";
-import workProfileServices from "@/app/services/workProfileServices";
+import { SkillsType } from "@/utils/types/types";
+import useWorkProfileServices from "@/app/services/workProfileServices";
 import { Badge } from "@/components/ui/badge";
 import DatePicker from "@/components/DatePicker/DatePicker";
 import SkillDisplayer from "@/components/skillSelectorComponents/skillDisplayer";
@@ -46,8 +46,8 @@ const CreateProject: React.FC = () => {
   const [newFeature, setNewFeature] = useState("");
   const [featureModel, setfeatureModel] = useState(false);
   const [skills, setSkills] = useState<SkillsType>(null);
-  const [deadLine, setDeadLine] = useState<Date>()
-  const {createProject}=useProjectCrudServices()
+  const [deadLine, setDeadLine] = useState<Date>();
+  const { createProject, getProjectDetailsService } = useProjectCrudServices();
   const [freelancerExpertise, setfreelancerExpertise] =
     useState("intermediate");
 
@@ -61,10 +61,28 @@ const CreateProject: React.FC = () => {
   const [features, setFeatures] = useState([
     {
       id: 1,
-      name: "feature 1",
+      name: "",
     },
   ]);
-  
+
+  useEffect(() => {
+    const editableProjectId = JSON.parse(localStorage.getItem("editableProjectId") as string);
+    console.log('editable id >>>>',editableProjectId);
+    
+    editableProjectId &&
+      getProjectDetailsService(editableProjectId).then((projectDetails) => {
+        console.log("project details fetched", projectDetails);
+        setProjectOverview({
+          title: projectDetails.title,
+          description: projectDetails.description,
+          budget: projectDetails.budget,
+        });
+
+        setSkills(projectDetails.skills as SkillsType);
+      });
+  }, []);
+
+  console.log("project overview", projectOverview);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -73,8 +91,8 @@ const CreateProject: React.FC = () => {
 
     let cleanedValue = value;
     if (name == "budget") {
-      console.log("budget");
-    } else {
+      cleanedValue = value;
+    } else if (name == "title") {
       cleanedValue = nameValidator(value);
     }
 
@@ -92,6 +110,13 @@ const CreateProject: React.FC = () => {
     } else {
       setfeatureModel(true);
     }
+  };
+
+  const addSkill = (newSkill: string | string[]) => {
+    setSkills((prevSkills: SkillsType) => {
+      const updatedSkills = prevSkills || []; // Initialize as empty array if null
+      return [...updatedSkills, newSkill as string];
+    });
   };
 
   const addFeature = () => {
@@ -120,7 +145,13 @@ const CreateProject: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    createProject(projectOverview,features,deadLine,freelancerExpertise,skills)
+    createProject(
+      projectOverview,
+      features,
+      deadLine,
+      freelancerExpertise,
+      skills
+    );
   };
 
   const steps = [
@@ -137,7 +168,7 @@ const CreateProject: React.FC = () => {
                   name="title"
                   value={projectOverview.title}
                   onChange={handleInputChange}
-                  className="rounded-md h-10 w-full"
+                  className="rounded-md h-10 w-full px-1"
                   type="text"
                 />
               </div>
@@ -150,10 +181,11 @@ const CreateProject: React.FC = () => {
 
               <div className="w-full ">
                 <textarea
+                  maxLength={5000}
                   name="description"
                   value={projectOverview.description}
                   onChange={handleInputChange}
-                  className="rounded-md h-16 max-h-36 w-full"
+                  className="rounded-md h-36 max-h-80 w-full text-base p-1"
                 />
               </div>
             </div>
@@ -264,7 +296,7 @@ const CreateProject: React.FC = () => {
                 Choose upto 8 skills to filter out freelancers
               </div>
 
-              <SkillDisplayer skills={skills} setSkills={setSkills} />
+              <SkillDisplayer skills={skills} setSkills={addSkill} />
             </section>
             <div className="flex h-full">
               <div className="budget-wrapper flex items-center justify-end p-5  w-1/2 ">
@@ -296,7 +328,7 @@ const CreateProject: React.FC = () => {
                   </div>
 
                   <div>
-                    <DatePicker date={deadLine}  setDate={setDeadLine}/>
+                    <DatePicker date={deadLine} setDate={setDeadLine} />
                   </div>
                 </div>
               </div>
@@ -378,9 +410,7 @@ const CreateProject: React.FC = () => {
             </Button>
           )}
           {current === steps.length - 1 && (
-            <Button onClick={handleSubmit}>
-              Done
-            </Button>
+            <Button onClick={handleSubmit}>Done</Button>
           )}
         </div>
       </div>
