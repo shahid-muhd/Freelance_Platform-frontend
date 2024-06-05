@@ -1,12 +1,8 @@
-import { Url } from "url";
+
 
 type SkillsType = string[] | null;
-type skill = {
-  id?: number;
-  skills: string;
-};
 
-// interface Skills extends Array<skill> {}
+
 interface Skills {
   id?: number;
   skills?: SkillsType;
@@ -40,6 +36,8 @@ type User = {
   email?: string;
   phone?: string;
   profile_image?: string;
+  projects_listed?: number;
+  projects_working?: number;
 };
 
 type Address = {
@@ -115,6 +113,7 @@ type Proposal = {
   status: ProposalStatus;
   project: number;
   is_advance_paid: boolean;
+  accepted_work: "sample" | "final" | null;
 };
 type ProposalFilterCondition = "accepted" | "unanswered" | "all" | null;
 

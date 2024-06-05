@@ -2,9 +2,9 @@
 import useUserProfileServices from "@/app/services/userProfileServices";
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/utils/context/stateContextProviders";
-import React, { use, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import AddressModel from "./AddressEditModel";
-import { Address, FormSubmitParams } from "@/utils/types/types";
+import { Address,  } from "@/utils/types/types";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Input } from "@/components/ui/input";
 import OtpModel from "./OtpModel";
@@ -12,13 +12,7 @@ import { MdOutlineEdit } from "react-icons/md";
 import ProfilePictureChanger from "./profilePictureChanger";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// type User = {
-//   id: number;
-//   first_name?: string;
-//   last_name?: string;
-//   email?: string;
-//   phone?: string;
-// };
+
 
 import {
   Dialog,

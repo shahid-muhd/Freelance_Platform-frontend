@@ -90,6 +90,10 @@ const workContractApiRequest = async <T>({
 
   try {
     let response: AxiosResponse<T> | null = null;
+    if (method == "post") {
+
+      response = await primaryRequest.post<T>(requestUrl, data);
+    }
     if (method === "delete") {
       const requestDataata = {
         data,
@@ -149,5 +153,11 @@ export const proposalApi = {
     workContractApiRequest({
       method: "delete",
       data: { proposal_id: proposalId },
+    }),
+
+  acceptWork: (proposalId: number, type: "sample" | "final") =>
+    workContractApiRequest({
+      method: "post",
+      data: { proposal_id: proposalId, type },
     }),
 };

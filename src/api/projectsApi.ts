@@ -2,10 +2,9 @@ import { AxiosResponse } from "axios"; // Import AxiosResponse type if needed
 import { primaryRequest } from "../utils/axios/instances";
 // Assuming you have defined primaryRequest elsewhere
 import {
-  ProfileFrom,
+
   Project,
-  UserData,
-  verificationParams,
+
 } from "../utils/types/types";
 type HttpMethod = "get" | "post" | "patch" | "put" | "delete";
 type ActionMethods = "userProjects" | "save";

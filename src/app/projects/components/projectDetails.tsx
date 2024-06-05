@@ -1,14 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { CgDollar } from "react-icons/cg";
-import { AiOutlineHeart } from "react-icons/ai";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { FaHeadSideVirus } from "react-icons/fa6";
-import useProjectCrudServices from "@/app/services/projectCrudServices";
 import { Project } from "@/utils/types/types";
 import { Button } from "@/components/ui/button";
 import ProjectApplication from "./projectApplication";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -43,7 +40,7 @@ function ProjectDetails(props: Props) {
   };
   return (
     <div>
-      {project.status == "accepted" && (
+      {project.status == "recruiting" && (
         <ProjectApplication
           budget={project ? project.budget : "0"}
           projectId={project.id?.toString() as string}
@@ -140,11 +137,7 @@ function ProjectDetails(props: Props) {
         </div>
 
       </div>
-        {project.freelancer == userId && (
-          <div className="work-submit-wrapper">
-            <Button > Request Sample Work Validation </Button>
-          </div>
-        )}
+ 
     </div>
   );
 }

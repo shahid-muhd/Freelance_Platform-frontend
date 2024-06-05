@@ -2,23 +2,21 @@ import { proposalApi } from "@/api/proposalApi";
 import { useToast } from "@/components/ui/use-toast";
 import {
   ProjectApplicationType,
+  Proposal,
   ProposalFilterCondition,
   proposalStatus,
 } from "@/utils/types/types";
+import { useRouter } from "next/navigation";
 
 function useProjectProposalServices() {
   const { toast } = useToast();
-  const {
-    createProposal,
-    getAllProposals,
-    getProposal,
-    changeProposalStatus,
-    terminateWorkContract,
-  } = proposalApi;
-
+  const { createProposal, getAllProposals, getProposal, changeProposalStatus } =
+    proposalApi;
+    const router=useRouter()
   const toastMessages = {
     proposalAcceptance:
       "You have accepted the proposal. Pay advance amount to start the work.",
+    workContractTermination: "This Work Contract has been terminated.",
   };
 
   const getProposalService = async ({
@@ -104,7 +102,30 @@ function useProjectProposalServices() {
     console.log("inside service terminate");
     proposalApi.terminateWorkContract(proposalId).then(() => {
       toast({
-        description: "This Work Contract has been terminated.",
+        description: toastMessages.workContractTermination,
+      });
+     router.refresh()
+    });
+  };
+
+  const approveWork = async (
+    proposalId: number,
+    type: "sample" | "final",
+    setProposal: React.Dispatch<React.SetStateAction<Proposal | undefined>>
+  ) => {
+    proposalApi.acceptWork(proposalId, type).then((data) => {
+      toast({
+        description: data as string,
+      });
+
+      setProposal((prevState) => {
+        if (!prevState) {
+          return undefined;
+        }
+        return {
+          ...prevState,
+          accepted_work: type,
+        };
       });
     });
   };
@@ -114,6 +135,7 @@ function useProjectProposalServices() {
     getProposalService,
     proposalStatusChangeService,
     terminateContractService,
+    approveWork,
   };
 }
 

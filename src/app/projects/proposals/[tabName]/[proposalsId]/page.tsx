@@ -75,22 +75,26 @@ function Page({
   };
 
   return (
-    <div className=" ">
-      {tabName == "received" ? (
-        <RecievedProposalDetails
-          proposal={proposal}
-          workProfile={workProfile}
-          changeProposalStatus={changeProposalStatus}
-          paymentAddress={paymentAddress as PrePaymentDetails}
-        />
-      ) : (
-        <SendProposlDetails
-          proposal={proposal}
-          workProfile={workProfile}
-          paymentAddress={paymentAddress as PrePaymentDetails}
-        />
+    <>
+      {proposal && (
+        <div className="">
+          {tabName == "received" ? (
+            <RecievedProposalDetails
+              proposal={proposal}
+              workProfile={workProfile}
+              changeProposalStatus={changeProposalStatus}
+              paymentAddress={paymentAddress as PrePaymentDetails}
+            />
+          ) : (
+            <SendProposlDetails
+              proposal={proposal}
+              workProfile={workProfile}
+              paymentAddress={paymentAddress as PrePaymentDetails}
+            />
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }
 

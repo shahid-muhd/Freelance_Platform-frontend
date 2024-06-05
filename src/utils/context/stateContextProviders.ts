@@ -1,8 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import constate from "constate";
-import { Message, PortfoliosState, Subscription, User, UserData } from "../types/types";
-
+import {
+  Message,
+  PortfoliosState,
+  Subscription,
+  User,
+  UserData,
+} from "../types/types";
 
 // For preventing users from accessing sections of the app in certain senarios.
 function useDisabler() {
@@ -23,26 +28,25 @@ function useUserData() {
 
 export const [UserContextProvider, useUserContext] = constate(useUserData);
 
-
-
 function useSubscriptionDetails() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
 
   return { subscription, setSubscription };
 }
 
-export const [SubscriptionContextProvider, useSubscriptionContext] = constate(useSubscriptionDetails);
+export const [SubscriptionContextProvider, useSubscriptionContext] = constate(
+  useSubscriptionDetails
+);
 
-
-
-
-
-function useApplicationData() {
+function useProjectApplicationData() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+
   return { isSheetOpen, setIsSheetOpen };
 }
+
 export const [ApplicationContextProvider, useApplicationContext] =
-  constate(useApplicationData);
+  constate(useProjectApplicationData);
 
 function useWorkProfileCreator() {
   const [profileDescription, setprofileDescription] = useState({

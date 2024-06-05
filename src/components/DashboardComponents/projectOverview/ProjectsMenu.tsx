@@ -1,23 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Project, WorkProfile } from "@/utils/types/types";
-import { MdFolderDelete } from "react-icons/md";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverAnchor,
-} from "@/components/ui/popover";
+
+import { Project } from "@/utils/types/types";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import useProjectCrudServices from "@/app/services/projectCrudServices";
@@ -29,15 +13,6 @@ function UserProjects() {
   const [workingProjects, setWorkingProjects] = useState<Project[]>();
   const { retrieveUserProjects } = useProjectCrudServices();
   const { user } = useUserContext();
-  // const popOverController = (e: React.SyntheticEvent, id: number) => {
-  //   e.stopPropagation();
-
-  //   setDeletePopover({ isOpen: true, profileId: id });
-  // };
-
-  // const handleDelete = () => {
-  //   setDeletePopover({ isOpen: false, profileId: 0 });
-  // };
 
   useEffect(() => {
     retrieveUserProjects().then((projects) => {

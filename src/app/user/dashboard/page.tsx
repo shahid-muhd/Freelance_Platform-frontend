@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaUser } from "react-icons/fa";
 import { FaNetworkWired } from "react-icons/fa6";
 import { RxDashboard } from "react-icons/rx";
 import { LuBuilding2 } from "react-icons/lu";

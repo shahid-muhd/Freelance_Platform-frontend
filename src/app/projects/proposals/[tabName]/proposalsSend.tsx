@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/table";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -21,7 +20,6 @@ import {
 
 import useProjectProposalServices from "@/app/services/projectProposalServices";
 import {
-  ProjectApplicationType,
   Proposal,
   ProposalFilterCondition,
 } from "@/utils/types/types";
@@ -40,7 +38,7 @@ import {
 
 function ProposalsSend() {
   const [proposals, setproposals] = useState<Proposal[]>([]);
-  const { getProposalService } = useProjectProposalServices();
+  const { getProposalService,terminateContractService } = useProjectProposalServices();
 
   const [filterCondition, setfilterCondition] =
     useState<ProposalFilterCondition>("all");
@@ -125,10 +123,14 @@ function ProposalsSend() {
                   </TableCell>
                   <TableCell className="">{proposal.status}</TableCell>
                   <TableCell className="">
-                    {proposal.is_advance_paid ? (
+                    {proposal.is_advance_paid && !proposal.accepted_work ? (
                       <Badge variant={"secondary"} className="text-sm">
                         Advance Initiated
                       </Badge>
+                    ) : proposal.accepted_work == "sample" ? (
+                      "Advance Received"
+                    ) : proposal.accepted_work == "final" ? (
+                      "Final Payment Credited"
                     ) : (
                       "No Payments"
                     )}
@@ -152,9 +154,20 @@ function ProposalsSend() {
                         </DropdownMenuItem>
 
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Save Proposal</DropdownMenuItem>
 
-                        <DropdownMenuItem>Reject Proposal</DropdownMenuItem>
+                        {!proposal.is_advance_paid ? (
+                          <>
+                            <DropdownMenuItem onClick={()=>terminateContractService(proposal.id)} >Cancel Proposal</DropdownMenuItem>
+                          </>
+                        ) : (
+                          proposal.accepted_work !== "final" && (
+                            <>
+                              <DropdownMenuItem>
+                                Terminate Contract
+                              </DropdownMenuItem>
+                            </>
+                          )
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

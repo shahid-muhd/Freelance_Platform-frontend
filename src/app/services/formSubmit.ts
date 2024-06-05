@@ -7,6 +7,7 @@ import {
 } from "@/api/authenticationApi";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { validatePassword } from "@/utils/validators/passwordValidator";
 
 type userCredentials = {
   email: string;
@@ -35,8 +36,7 @@ export function useFormSubmitter() {
       switch (formType) {
         case "register":
           await Registration({ email });
-     
-          
+
           localStorage.setItem("unVerifiedEmail", JSON.stringify(email));
           toast({
             className: "bg-secondary border-6",
@@ -45,9 +45,22 @@ export function useFormSubmitter() {
           break;
 
         case "accountCreation":
-          await Registration({ email, password, first_name, last_name });
-          localStorage.clear();
-          router.replace("/auth/login");
+          if (password) {
+            const result = validatePassword(password);
+            if (result.errors) {
+              result.errors.forEach((err) => {
+                toast({
+                  description: err,
+                });
+              });
+              console.log(result.errors);
+            } 
+            if (result.valid){
+              await Registration({ email, password, first_name, last_name });
+              localStorage.clear();
+              router.replace("/auth/login");
+            }
+          }
           break;
 
         case "requestRecovery":
@@ -59,7 +72,7 @@ export function useFormSubmitter() {
 
           toast({
             className: "bg-secondary border-6",
-            title:'You can now use your new password'
+            title: "You can now use your new password",
           });
 
           break;
@@ -87,7 +100,7 @@ export function useFormSubmitter() {
       }
     } catch (err: any) {
       console.log(err);
-      
+
       toast({
         className: "bg-secondary border-6 ",
         description:

@@ -21,30 +21,37 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import useNotificationStore from "@/stores/notificationStore";
+import { ScrollArea } from "../ui/scroll-area";
 
 export function NotificationSheet() {
   const { notificationSheetState, toggleNotificationSheet, notifications } =
     useNotificationStore();
-   
-  console.log('stored noties',notifications);
-  
+
+  console.log("stored noties", notifications);
+
   return (
     <Sheet open={notificationSheetState}>
       <SheetContent className="min-w-[500px] space-y-5">
         <SheetHeader>
           <SheetTitle>Notifications</SheetTitle>
         </SheetHeader>
+        <ScrollArea className="w-full h-[550px]" >
         {notifications &&
           notifications.map((notification) => (
             <div key={notification.id} className="notifications-wraper w-full">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="tracking-wide">{notification.title}</CardTitle>
-                  <CardDescription>{notification.description}</CardDescription>
-                </CardHeader>
-              </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="tracking-wide">
+                      {notification.title}
+                    </CardTitle>
+                    <CardDescription>
+                      {notification.description}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
             </div>
           ))}
+          </ScrollArea>
         <SheetFooter className="py-3 ">
           <SheetClose>
             <Button

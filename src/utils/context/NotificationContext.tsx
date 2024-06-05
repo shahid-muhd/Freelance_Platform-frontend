@@ -69,15 +69,13 @@ export const NotificationProvider = ({ children }: Props) => {
 
           switch (eventData.message?.event_name) {
             case "notification_history" || "proposal":
-              console.log(eventData.message?.event_name);
-              console.log("new message", eventData.message.message);
-              const newNotifications :Notification[]=notifications.concat(eventData.message.message)
+              const newNotifications: Notification[] = notifications.concat(
+                eventData.message.message
+              );
               addNotifications(newNotifications);
 
               break;
             case "proposal":
-              console.log(eventData.message?.event_name);
-              console.log("new message", eventData.message.message);
               addNotifications(eventData.message.message);
 
               break;

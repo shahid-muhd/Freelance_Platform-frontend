@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,17 +6,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import useUserProfileServices from "@/app/services/userProfileServices";
-import { verificationParams } from "@/utils/types/types";
 
 type Props = {
   isModelOpen: boolean;
@@ -84,7 +81,7 @@ function OtpModel(props: Props) {
                   maxLength={inputLength}
                   render={({ slots }) => (
                     <>
-                      <InputOTPGroup  className="gap-2">
+                      <InputOTPGroup className="gap-2">
                         {slots.slice(0, inputLength).map((slot, index) => (
                           <InputOTPSlot key={index} {...slot} />
                         ))}
@@ -102,7 +99,11 @@ function OtpModel(props: Props) {
               <Button onClick={closeModel} variant={"outline"}>
                 Cancel
               </Button>{" "}
-              <Button onClick={handleOtpSubmit} disabled={otp.length==inputLength?false:true} variant={"secondary"}>
+              <Button
+                onClick={handleOtpSubmit}
+                disabled={otp.length == inputLength ? false : true}
+                variant={"secondary"}
+              >
                 Submit
               </Button>{" "}
             </div>

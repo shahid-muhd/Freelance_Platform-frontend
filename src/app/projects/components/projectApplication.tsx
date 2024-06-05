@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -77,6 +76,8 @@ function ProjectApplication(props: Props) {
   };
 
   useEffect(() => {
+    console.log(isSheetOpen);
+    
     getWorkProfiles({ userSpecific: true });
   }, []);
 

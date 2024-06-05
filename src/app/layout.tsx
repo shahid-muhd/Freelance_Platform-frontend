@@ -17,7 +17,7 @@ import PromoBar from "@/components/promotionBar/promoBar";
 
 
 import { NotificationSheet } from "@/components/NotificationSheet/NotificationSheet";
-import { VideoChatSocketProvider } from "@/utils/context/videoChatSocketContext";
+
 import { NotificationProvider } from "@/utils/context/NotificationContext";
 
 const nunito = Nunito_Sans({ subsets: ["latin"] });

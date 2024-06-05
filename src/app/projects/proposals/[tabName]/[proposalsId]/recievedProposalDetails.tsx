@@ -4,7 +4,7 @@ import {
   proposalStatus,
   WorkProfile,
 } from "@/utils/types/types";
-import React from "react";
+import React, { useState } from "react";
 import { LuDollarSign } from "react-icons/lu";
 import {
   Tooltip,
@@ -14,12 +14,9 @@ import {
 } from "@/components/ui/tooltip";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
@@ -29,10 +26,10 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import useProjectProposalServices from "@/app/services/projectProposalServices";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { TbHelpSquareRounded } from "react-icons/tb";
 import Link from "next/link";
 import StripeCheckout from "@/components/payment/stripeCheckout";
+import { PopoverClose } from "@radix-ui/react-popover";
 type Props = {
   proposal: Proposal | undefined;
   workProfile: WorkProfile | undefined;
@@ -41,17 +38,23 @@ type Props = {
 };
 
 function RecievedProposalDetails(props: Props) {
-  const proposal = props.proposal;
+  const [proposal, setProposal] = useState(props.proposal);
   const changeProposalStatus = props.changeProposalStatus;
   const paymentAddress = props.paymentAddress;
-  const { terminateContractService } = useProjectProposalServices();
-  const acceptSampleWork = () => {};
+
+  const { terminateContractService, approveWork } =
+    useProjectProposalServices();
+
+  const approveWorkHandler = (work_type: "sample" | "final") => {
+    proposal &&
+      approveWork(proposal?.id, work_type, setProposal).then(() => {});
+  };
 
   const handleTermination = () => {
-    proposal && terminateContractService(proposal.id)
+    proposal && terminateContractService(proposal.id);
   };
   return (
-    <div className="border rounded-lg p-8" >
+    <div className="border rounded-lg p-8">
       <div className="space-y-5 divide-y-2">
         <div className="proposal-overview  relative ">
           <div className="absolute right-0 top-0 ">
@@ -140,90 +143,108 @@ function RecievedProposalDetails(props: Props) {
           </div>
         </div>
 
-        <div className="relative proposal-control-btn flex gap-5 w-full justify-end pt-5">
-          <div>
-            {proposal?.status == "unanswered" && (
-              <Button variant={"outline"}>Shortlist Proposal</Button>
-            )}
-          </div>
-          {!proposal?.is_advance_paid && (
+        {proposal?.accepted_work !== "final" && (
+          <div className="relative proposal-control-btn flex gap-5 w-full justify-end pt-5">
             <div>
-              <Button variant={"outline"}>Reject Proposal</Button>
+              {proposal?.status == "unanswered" && (
+                <Button variant={"outline"}>Shortlist Proposal</Button>
+              )}
             </div>
-          )}
-          <div>
-            {proposal?.status == "accepted" ? (
-              <div className="flex gap-5">
-                {!proposal.is_advance_paid ? (
-                  <div>
-                    <Button
-                      onClick={() => changeProposalStatus("unanswered")}
-                      variant={"secondary"}
-                    >
-                      Revoke Acceptance
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="  flex ">
-                    <div className="absolute left-0">
+            {!proposal?.is_advance_paid && (
+              <div>
+                <Button variant={"outline"}>Reject Proposal</Button>
+              </div>
+            )}
+            <div>
+              {proposal?.status == "accepted" ? (
+                <div className="flex gap-5">
+                  {!proposal.is_advance_paid ? (
+                    <div>
                       <Button
-                        onClick={handleTermination}
-                        variant={"destructive"}
+                        onClick={() => changeProposalStatus("unanswered")}
+                        variant={"secondary"}
                       >
-                        Terminate Work Contract
+                        Revoke Acceptance
                       </Button>
                     </div>
+                  ) : (
+                    <div className="  flex ">
+                      <div className="absolute left-0">
+                        <Button
+                          onClick={handleTermination}
+                          variant={"destructive"}
+                        >
+                          Terminate Work Contract
+                        </Button>
+                      </div>
+                      {!proposal.accepted_work && (
+                        <div>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant={"secondary"}>
+                                Accept Sample Work
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                              <div className="w-full space-y-3">
+                                <div>
+                                  <p>
+                                    Accepting a sample work initiates a
+                                    non-refundable adavnce payout to the
+                                    freelancer
+                                  </p>
+                                </div>
 
-                    <div>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            onClick={acceptSampleWork}
-                            variant={"secondary"}
+                                <div className="w-100 flex gap-3 justify-end">
+                                  <PopoverClose>
+                                    <Button variant={"outline"}> Cancel</Button>
+                                  </PopoverClose>
+                                  <Button
+                                    onClick={() => approveWorkHandler("sample")}
+                                    variant={"secondary"}
+                                  >
+                                    Confirm
+                                  </Button>
+                                </div>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      )}
+                      {proposal.accepted_work == "sample" && (
+                        <div>
+                          <StripeCheckout
+                            productType="payment"
+                            pricingName={paymentAddress?.final_pricing_id}
                           >
-                            Accept Sample Work
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80">
-                          <div className="w-full space-y-3">
-                            <div>
-                              <p>
-                                Accepting a sample work initiates a
-                                non-refundable adavnce payout to the freelancer
-                              </p>
-                            </div>
-
-                            <div className="w-100 flex gap-3 justify-end">
-                              <Button variant={"outline"}> Cancel</Button>
-                              <Button>Confirm</Button>
-                            </div>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
+                            <Button>Approve Final Work</Button>
+                          </StripeCheckout>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                )}
-                <div>
-                  {!proposal.is_advance_paid && (
-                    <StripeCheckout
-                      productType="payment"
-                      pricingName={paymentAddress?.advance_pricing_id}
-                    >
-                      <Button>Pay Advance Amount</Button>
-                    </StripeCheckout>
                   )}
+                  <div>
+                    {!proposal.is_advance_paid && (
+                      <StripeCheckout
+                        productType="payment"
+                        pricingName={paymentAddress?.advance_pricing_id}
+                      >
+                        <Button>Pay Advance Amount</Button>
+                      </StripeCheckout>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <Button
-                onClick={() => changeProposalStatus("accepted")}
-                variant={"secondary"}
-              >
-                Accept Propoal
-              </Button>
-            )}
+              ) : (
+                <Button
+                  onClick={() => changeProposalStatus("accepted")}
+                  variant={"secondary"}
+                >
+                  Accept Propoal
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

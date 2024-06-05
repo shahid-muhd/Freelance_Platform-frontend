@@ -92,13 +92,13 @@ function SideBarClient() {
           </div>
           <div className="flex gap-3">
             <div>
-              <p>Projects Listed :</p>
+              <p>Projects Listed : {userDetails?.projects_listed}</p>
             </div>
             <div></div>
           </div>
           <div className="flex gap-3">
             <div>
-              <p>Projects Working :</p>
+              <p>Projects Working : {userDetails?.projects_working}</p>
             </div>
             <div></div>
           </div>
