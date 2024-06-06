@@ -11,6 +11,7 @@ import { PiSignOutBold } from "react-icons/pi";
 import useWorkProfileStore from "@/stores/workProfileStore";
 import UserDetailsComponent from "@/components/DashboardComponents/personalDetails/currentUserDetailsComponent";
 import WorkProfiles from "@/components/DashboardComponents/workProfile/WorkProfiles";
+
 interface MenuItems {
   id: number;
   name: string;
