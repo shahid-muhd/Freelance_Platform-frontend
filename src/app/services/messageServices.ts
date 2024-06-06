@@ -23,7 +23,7 @@ const useMessageService = () => {
       token = JSON.parse(token);
     }
     const webSocket = new WebSocket(
-      `ws://localhost:8000/ws/chat/?token=${token}`
+      `${process.env.NEXT_PUBLIC_SOCKET_BASE_URL}/ws/chat/?token=${token}`
     ); // Replace 'your-backend-url' with your actual WebSocket URL
 
     webSocket.onopen = () => {

@@ -4,7 +4,7 @@ export const webSocketInitializer = (onMessageReceive: (result: string) => void)
     token = JSON.parse(token);
   }
   const webSocket = new WebSocket(
-    `ws://localhost:8000/ws/chat/?token=${token}`
+    `${process.env.NEXT_PUBLIC_SOCKET_BASE_URL}/ws/chat/?token=${token}`
   );
 
   webSocket.onopen = () => {

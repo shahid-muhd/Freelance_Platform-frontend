@@ -50,7 +50,7 @@ export const NotificationProvider = ({ children }: Props) => {
         token = JSON.parse(token);
 
         socket = new WebSocket(
-          `ws://localhost:8000/ws/notifications/?token=${token}`
+          `${process.env.NEXT_PUBLIC_SOCKET_BASE_URL}/ws/notifications/?token=${token}`
         );
 
         socket.addEventListener("open", () => {

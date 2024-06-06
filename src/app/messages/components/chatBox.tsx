@@ -53,7 +53,7 @@ function ChatBox() {
       roomName = user?.user?.id.toString() + currentExchanger.toString();
 
       const webSocket = new WebSocket(
-        `ws://localhost:8000/ws/chat/${roomName}/?token=${token}`
+        `${process.env.NEXT_PUBLIC_SOCKET_BASE_URL}/ws/chat/${roomName}/?token=${token}`
       );
       webSocket.onopen = () => {
         console.log("WebSocket connected");

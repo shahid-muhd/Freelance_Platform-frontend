@@ -9,7 +9,7 @@ class UserNotAllowedError extends Error {
 }
 
 export const primaryRequest = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 
   headers: {
     "Content-Type": "application/json",
@@ -17,7 +17,7 @@ export const primaryRequest = axios.create({
 });
 
 export const unAuthenticatedRequest = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 
   headers: {
     "Content-Type": "application/json",
