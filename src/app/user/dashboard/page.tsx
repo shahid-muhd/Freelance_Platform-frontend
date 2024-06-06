@@ -4,14 +4,13 @@ import { FaNetworkWired } from "react-icons/fa6";
 import { RxDashboard } from "react-icons/rx";
 import { LuBuilding2 } from "react-icons/lu";
 import { FaStar } from "react-icons/fa";
-import UserDetailsComponent from "../../../components/DashboardComponents/personalDetails/currentUserDetailsComponent";
 import UserProjects from "../../../components/DashboardComponents/projectOverview/ProjectsMenu";
 import useUserProfileServices from "@/app/services/userProfileServices";
-import WorkProfiles from "../../../components/DashboardComponents/workProfile/WorkProfiles";
 import useWorkProfileServices from "@/app/services/workProfileServices";
-import { WorkProfile } from "@/utils/types/types";
 import { PiSignOutBold } from "react-icons/pi";
 import useWorkProfileStore from "@/stores/workProfileStore";
+import UserDetailsComponent from "@/components/DashboardComponents/personalDetails/currentUserDetailsComponent";
+import WorkProfiles from "@/components/DashboardComponents/workProfile/WorkProfiles";
 interface MenuItems {
   id: number;
   name: string;
