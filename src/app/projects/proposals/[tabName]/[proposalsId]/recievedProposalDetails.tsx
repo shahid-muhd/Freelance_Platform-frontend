@@ -30,6 +30,7 @@ import { TbHelpSquareRounded } from "react-icons/tb";
 import Link from "next/link";
 import StripeCheckout from "@/components/payment/stripeCheckout";
 import { PopoverClose } from "@radix-ui/react-popover";
+import downloadFile from "@/utils/controllers/fileDownloader";
 type Props = {
   proposal: Proposal | undefined;
   workProfile: WorkProfile | undefined;
@@ -125,11 +126,28 @@ function RecievedProposalDetails(props: Props) {
             </div>
           </div>
         </div>
-        <div className="work-profile-view pt-5 ">
-          <div className="font-semibold ">
-            <Link href={`/user/workprofiles/${proposal?.work_profile}`}>
-              <Button variant={"link"}> View Work Profile</Button>
-            </Link>
+        <div className="supporing-content-view pt-5  ">
+          <div className="font-semibold flex">
+            <div>
+              <Link href={`/user/workprofiles/${proposal?.work_profile}`}>
+                <Button variant={"link"}> View work profile</Button>
+              </Link>
+            </div>
+            {proposal?.document && (
+              <div>
+                <Button
+                  onClick={() => {
+                    downloadFile(
+                      proposal?.document,
+                      proposal?.freelancer_name + "attatchment.pdf"
+                    );
+                  }}
+                  variant={"link"}
+                >
+                  View attatched document
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className="proposal-cover-letter text-base py-10 ">

@@ -1,7 +1,4 @@
-
-
 type SkillsType = string[] | null;
-
 
 interface Skills {
   id?: number;
@@ -113,6 +110,7 @@ type Proposal = {
   status: ProposalStatus;
   project: number;
   is_advance_paid: boolean;
+  document: string;
   accepted_work: "sample" | "final" | null;
 };
 type ProposalFilterCondition = "accepted" | "unanswered" | "all" | null;
