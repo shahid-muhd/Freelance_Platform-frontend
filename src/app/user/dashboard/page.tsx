@@ -9,8 +9,8 @@ import useUserProfileServices from "@/app/services/userProfileServices";
 import useWorkProfileServices from "@/app/services/workProfileServices";
 import { PiSignOutBold } from "react-icons/pi";
 import useWorkProfileStore from "@/stores/workProfileStore";
-import UserDetailsComponent from "@/components/DashboardComponents/personalDetails/currentUserDetailsComponent";
 import WorkProfiles from "@/components/DashboardComponents/workProfile/WorkProfiles";
+import UserDetailsComponent from "@/components/DashboardComponents/personalDetails/currentUserDetailsComponent";
 
 interface MenuItems {
   id: number;

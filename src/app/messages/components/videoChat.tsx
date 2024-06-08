@@ -3,11 +3,15 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import useVideoChatServices from "@/app/services/videoChatServices";
 
 function VideoChat() {
-  const {
- myMeeting
-  } = useVideoChatServices();
-  
- 
+  const { myMeeting } = useVideoChatServices();
+
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem("videoChatRoomId");
+      sessionStorage.removeItem("videoChatExchanger");
+    };
+  }, []);
+
   return (
     <div className="w-full h-[85vh] ">
       <div

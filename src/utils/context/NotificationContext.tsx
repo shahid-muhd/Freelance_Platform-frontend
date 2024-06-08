@@ -82,6 +82,7 @@ export const NotificationProvider = ({ children }: Props) => {
             case "call":
               eventData.message.message.forEach((message: Notification) => {
                 toast({
+                  duration: 10000,
                   className: "border border-secondary",
                   title: "Incoming Call",
                   description: message?.title,

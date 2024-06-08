@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import VideoChat from "../../components/videoChat";
 
 function Call({ params }: { params: { roomID: string } }) {

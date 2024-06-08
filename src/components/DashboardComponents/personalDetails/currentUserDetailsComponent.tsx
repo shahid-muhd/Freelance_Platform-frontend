@@ -74,6 +74,8 @@ function UserDetailsComponent() {
       if (newProfileImage) {
         handleProfileFormSubmits({
           data: { user: { profile_image: newProfileImage as string } },
+        }).then(()=>{
+          setProfilePicDialogue(false)
         })
       }
     } else {

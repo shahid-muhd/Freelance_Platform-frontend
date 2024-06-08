@@ -35,13 +35,13 @@ function AddressModel(props: Props) {
     props.address && setAddress(props.address);
   }, []);
 
-
-
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     handleProfileFormSubmits({
       data: { address },
+    }).then(() => {
+      props.setIsOpen(false)
     });
   };
 

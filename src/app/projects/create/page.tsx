@@ -45,7 +45,7 @@ const CreateProject: React.FC = () => {
   const [bulletSecondary, setBulletSecondary] = useState(false);
   const [newFeature, setNewFeature] = useState("");
   const [featureModel, setfeatureModel] = useState(false);
-  const [skills, setSkills] = useState<SkillsType>(null);
+  const [skills, setSkills] = useState<SkillsType>([]);
   const [deadLine, setDeadLine] = useState<Date>();
   const { createProject, getProjectDetailsService } = useProjectCrudServices();
   const [freelancerExpertise, setfreelancerExpertise] =
@@ -66,9 +66,11 @@ const CreateProject: React.FC = () => {
   ]);
 
   useEffect(() => {
-    const editableProjectId = JSON.parse(localStorage.getItem("editableProjectId") as string);
-    console.log('editable id >>>>',editableProjectId);
-    
+    const editableProjectId = JSON.parse(
+      localStorage.getItem("editableProjectId") as string
+    );
+    console.log("editable id >>>>", editableProjectId);
+
     editableProjectId &&
       getProjectDetailsService(editableProjectId).then((projectDetails) => {
         console.log("project details fetched", projectDetails);
@@ -113,10 +115,14 @@ const CreateProject: React.FC = () => {
   };
 
   const addSkill = (newSkill: string | string[]) => {
-    setSkills((prevSkills: SkillsType) => {
-      const updatedSkills = prevSkills || []; // Initialize as empty array if null
-      return [...updatedSkills, newSkill as string];
-    });
+    if (Array.isArray(newSkill)) {
+      setSkills(newSkill)
+    } else {
+      setSkills((prevSkills: SkillsType) => {
+        const existingSkills = prevSkills || []; // Initialize as empty array if null
+        return [...existingSkills, newSkill as string];
+      });
+    }
   };
 
   const addFeature = () => {

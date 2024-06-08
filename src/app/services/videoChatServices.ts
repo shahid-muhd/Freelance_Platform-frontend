@@ -5,7 +5,7 @@ import roomIDGenerator from "@/utils/randomIDGenerator";
 
 const getRoomId = () => {
   let roomID = "";
-  roomID = sessionStorage.getItem("videoChatRoomId") || roomIDGenerator(5);
+  roomID = sessionStorage.getItem("videoChatRoomId") as string;
   sessionStorage.setItem("videoChatRoomId", roomID);
   return roomID;
 };
